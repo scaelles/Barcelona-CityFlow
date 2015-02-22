@@ -1,7 +1,7 @@
 applications:
 - disk_quota: 1024M
   buildpack: php_buildpack
-  host: cityflow
+  host: CityFlow
   name: CityFlow
   path: .
   domain: mybluemix.net
