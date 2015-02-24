@@ -15,7 +15,7 @@
 				<h1 id = "message"> 
 				<?php 
 				
-				    echo "Service initiated!! Test";
+				    echo "Service initiated!! Test2";
 
 				?>
 				
