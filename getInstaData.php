@@ -1,32 +1,66 @@
 <?php
-	$hostname = 'us-cdbr-iron-east-01.cleardb.net';
-	$username = 'b8be3578d06bd2';
-	$password = '8d45e044';
-	$db = "ad_06d3edcdc42d9c2";
-	$con = mysqli_connect($hostname,$username,$password,$db) or die("Caca doble");
-	// Check connection
-	if (mysqli_connect_errno())
-	{
-	 echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	require_once("include/settings.php");
+	//Parameters
+	$periodUpdate = 120; //In minutes
+	
+	// //Structure JSON file
+	// [{
+        // "idcell": 1,
+        // "name": "Gràcia",
+		// "lat": XXX,
+		// "long": YYY,
+		// "rad": ZZZ,
+		// "posts": [{
+			// "lat": lat,
+			// "long": long,
+			// "im_link": link,
+			// "tags": tags
+			// },{}]
+        // "numLastPosts": #number
+        // }
+    // },
+    // {}]
+	$outputJSONarray = array();
+	$c=0;
+	$resCells = mysqli_query($con, "SELECT * FROM cells") or die("Error in cells query<br>".mysqli_error($con));
+	while($rowCells=mysqli_fetch_array($resCells)){
+		//For each cell, we have to look for the last 3 posts in the social network, and count posts in last period of time.
+		$idCell = $rowCells['idcells'];
+		$nomCell = $rowCells['name'];
+		$latCell = $rowCells['lat'];
+		$longCell = $rowCells['long'];
+		$radCell = $rowCells['rad'];
+		
+		//Count posts in last X minutes
+		$resNumPosts=mysqli_query($con,"SELECT COUNT(idposts) FROM posts WHERE date BETWEEN DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND NOW() AND idcells='$idCell'") or die(mysqli_error($con));
+		if(mysqli_num_rows($resNumPosts)>0){
+			$numPostsCell = mysqli_fetch_array($resNumPosts)[0];
+		}else{
+			$numPostsCell=0;
+		}
+		//echo $numPostsCell;
+		
+		//Retrieve 3 last images in neighbourhood
+		$cPosts=0;
+		$arrayPosts=array();
+		$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.long FROM posts WHERE idcells='$idCell' ORDER BY date DESC LIMIT 3") or die(mysqli_error($con));
+		while($rowPosts=mysqli_fetch_array($resPosts)){ 
+			$tagsPost=$rowPosts['tags'];
+			$linkPost=$rowPosts['im_link'];
+			$latPost=$rowPosts['lat'];
+			$longPost=$rowPosts['long'];
+			
+			$arrayPosts[$cPosts]=array('lat'=>$latPost, 'long'=>$longPost, 'link'=>$linkPost, 'tags'=>$tagsPost);
+			$cPosts++;
+		}
+		
+		//Write output array
+		$arrayCell=array('idCell'=>$idCell,'nameCell'=>utf8_encode($nomCell), 'lat'=>$latCell, 'long'=>$longCell, 'rad'=>$radCell, 'numLastPosts'=>$numPostsCell, 'posts'=>$arrayPosts);
+		
+		$outputJSONarray[$c]=$arrayCell;
+		$c++;
 	}
-	
-	$idcells = $_GET['idcell'];
-	
-	$res=mysqli_query($con,"SELECT COUNT(idposts) FROM posts WHERE date BETWEEN DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND NOW() AND idcells='$idcells'") or die("BETWEEN . mysqli_error()");
-	$rresu=mysqli_fetch_array($res);
-
-	$numPosts = $rresu[0];
-	$text=$numPosts."<p>Number of posts in last 5 minutes: ".$numPosts."<br>";
-	
-	$result=mysqli_query($con,"SELECT im_link FROM posts WHERE idcells='$idcells' ORDER BY date DESC LIMIT 3") or die(mysql_error());
-	while($rowCell=mysqli_fetch_array($result)){ 
-		$imgLink = $rowCell['im_link'];
-		$text=$text."<img src='".$imgLink."' width=100>";
-	}
-	
-	$text=$text."</p>";
-	echo $text;
-		//http://localhost/getInstaData.php?lat=41.403313&lng=2.156337&dist=650
-	mysqli_close($con);
+	$plainJSON = json_encode($outputJSONarray);
+	echo $plainJSON;
 			
 ?>
