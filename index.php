@@ -128,8 +128,7 @@
 	<script type="text/javascript" src="prototype.js"></script>
 	<script type="text/javascript">
 		//Funcio query Instagram
-		var JSONstring;
-		var numCoincidencies;
+		var JSONstring; //Global variable
 		function queryInsta(){
 			if (window.XMLHttpRequest){
 				// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -147,54 +146,55 @@
 			xmlhttp.send();
 		}
 
-	function initialize() {
-		var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
-		var markerPos = new google.maps.LatLng(41.397555, 2.191187);
+		function initialize() {
+			var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
+			var markerPos = new google.maps.LatLng(41.397555, 2.191187);
 
-		var mapOptions = {
-			zoom: 14,
-			center: myLatlng
-		};
+			var mapOptions = {
+				zoom: 14,
+				center: myLatlng
+			};
 
-		var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
-		queryInsta();
-		
-		alert(JSONstring);
-		var arrayJSON = JSON.parse(JSONstring);
-		alert(arrayJSON[0].boundsDistrict);
-		//Els camps disponibles estan en comentari.
-		for(var district in arrayJSON){
-			//district.nameDistrict
-			//district.boundsDistrict
-			alert(district.boundsDistrict);
+			var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
+			queryInsta();
 			
-			//TODO: Dibuixar poligon si estas en nivell de zoom que toca
-			//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
-			//TODO: Afegir listener si cal
-			
-			for(var neighb in district.neighbs){
-				//neighb.name
-				//neighb.bounds
-				//neighb.numLastPosts
+			alert(JSONstring);
+			var arrayJSON = JSON.parse(JSONstring);
+
+			//Els camps disponibles estan en comentari.
+			for(var i=0; i<arrayJSON.length; i++){
+				var district = arrayJSON[i];
+				//district.nameDistrict
+				//district.boundsDistrict
 				
 				//TODO: Dibuixar poligon si estas en nivell de zoom que toca
 				//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
-				//TODO: Afegir listener
-
-				for(var post in neighb.posts){
-					//post.tags
-					//post.im_link
-					//post.lat
-					//post.long
+				//TODO: Afegir listener si cal
+				
+				for(var j=0; j<district.neighbs.length; j++){
+					var neighb = district.neighbs[j];					//neighb.name
+					//neighb.bounds
+					//neighb.numLastPosts
 					
-					//TODO: Afegir post al heat map
-				}
-			}		
-		}
-	}
+					//TODO: Dibuixar poligon si estas en nivell de zoom que toca
+					//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
+					//TODO: Afegir listener
 
-	google.maps.event.addDomListener(window, 'load', initialize);
-</script>
+					for(var k=0; k<neighb.posts.length; k++){
+						var post = neighb.posts[k];
+						//post.tags
+						//post.im_link
+						//post.lat
+						//post.long
+						
+						//TODO: Afegir post al heat map
+					}
+				}		
+			}
+		}
+
+		google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
 </head>
 
 <body>
