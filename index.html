@@ -161,7 +161,7 @@
 		
 		alert(JSONstring);
 		var arrayJSON = JSON.parse(JSONstring);
-		alert(arrayJSON[0].nameDistrict);
+		document.getElementById('footer').innerHTML=var_dump(arrayJSON);
 		//Els camps disponibles estan en comentari.
 		for(var district in arrayJSON){
 			//district.nameDistrict
