@@ -64,7 +64,7 @@
 			$arrayNeigh[$cNeigh]=array('idNeigh'=>$idNeigh,'name'=>utf8_encode($nameNeigh), 'bounds'=>$boundsNeigh, 'numLastPosts'=>$numPostsNeigh, 'posts'=>$arrayPosts);
 			$cNeigh++;
 		}
-		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'nameDistrict'=>$nameDistrict,'boundsDistrict'=>boundsDistrict,'neighbs'=>$arrayNeigh);
+		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'nameDistrict'=>$nameDistrict,'boundsDistrict'=>$boundsDistrict,'neighbs'=>$arrayNeigh);
 		$c++;
 	}
 	$plainJSON = json_encode($arrayDistr);

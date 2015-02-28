@@ -162,12 +162,13 @@
 
 		var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 		queryInsta();
-		var arrayJSON = jQuery.parseJSON(JSONstring);
+		var arrayJSON = JSON.parse(JSONstring);
 		
 		//Els camps disponibles estan en comentari.
 		for(var district in arrayJSON){
 			//district.nameDistrict
 			//district.boundsDistrict
+			var boundsDistrict = district.boundsDistrict.split("|");
 			
 			//TODO: Dibuixar poligon si estas en nivell de zoom que toca
 			//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
