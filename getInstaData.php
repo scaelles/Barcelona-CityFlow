@@ -52,7 +52,8 @@
 			//Count posts in last X minutes
 			$resNumPosts=mysqli_query($con,"SELECT COUNT(idPost) FROM posts WHERE date BETWEEN DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND NOW() AND idNeighb='$idNeigh'") or die(mysqli_error($con));
 			if(mysqli_num_rows($resNumPosts)>0){
-				$numPostsNeigh = mysqli_fetch_array($resNumPosts)[0];
+				$numPostsNeigh = mysqli_fetch_array($resNumPosts);
+				$numPostsNeigh=$numPostsNeigh[0];
 			}else{
 				$numPostsNeigh=0;
 			}

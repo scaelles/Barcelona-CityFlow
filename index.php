@@ -158,7 +158,7 @@
 			var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 			queryInsta();
 			
-			alert(JSONstring);
+			//alert(JSONstring);
 			var arrayJSON = JSON.parse(JSONstring);
 
 			//Els camps disponibles estan en comentari.
@@ -167,14 +167,71 @@
 				//district.nameDistrict
 				//district.boundsDistrict
 				
+				alert (district.nameDistrict);
+				var districtCoords = [];
+				for (var myindex in district.boundsDistrict){
+					//alert(district.boundsDistrict[myindex]);
+					districtCoords[myindex]= new google.maps.LatLng(parseFloat(district.boundsDistrict[myindex][0]), parseFloat(district.boundsDistrict[myindex][1]));
+					//var myLat = parseFloat(district.boundsDistrict[myindex][0]);
+					//var myLong = district.boundsDistrict[myindex][1];
+					//alert(myLat);
+					//alert(myLong);
+				}
+				
+				//alert(districtCoords);
+				
+			  var districtPolygon=[]; //Definim un vector de polígons per després poder-los borrar
+			  
+			  var polygonCharacteristics = {
+				paths: districtCoords,
+				strokeColor: '#FF0000', //AIXO HA DE DEPENDRE DEL district.lastPosts o algo aixi, JA SIGUI COLOR O OPACITAT (DEL FILL)
+				strokeOpacity: 0.8,
+				strokeWeight: 3,
+				fillColor: '#F00000', 
+				fillOpacity: 0.1
+			  };
+			  
+ 			  districtPolygon[i] = new google.maps.Polygon(polygonCharacteristics); 
+			  districtPolygon[i].setMap(map);
+
 				//TODO: Dibuixar poligon si estas en nivell de zoom que toca
 				//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
 				//TODO: Afegir listener si cal
 				
 				for(var j=0; j<district.neighbs.length; j++){
-					var neighb = district.neighbs[j];					//neighb.name
+					var neighb = district.neighbs[j];					
+					//neighb.name
 					//neighb.bounds
 					//neighb.numLastPosts
+					//alert(neighb.name);
+					//alert(neighb.bounds);
+					//alert(neighb.numLastPosts);
+						
+					var neighbCoords = [];
+					for (var myindex in neighb.bounds){
+						//alert(district.boundsDistrict[myindex]);
+						neighbCoords[myindex]= new google.maps.LatLng(parseFloat(neighb.bounds[myindex][0]), parseFloat(neighb.bounds[myindex][1]));
+						//var myLat = parseFloat(district.boundsDistrict[myindex][0]);
+						//var myLong = district.boundsDistrict[myindex][1];
+						//alert(myLat);
+						//alert(myLong);
+					}
+					
+					//alert(districtCoords);
+					
+				  var neighbPolygon=[]; //Definim un vector de polígons per després poder-los borrar
+				  
+				  var neighbPolygonCharacteristics = {
+					paths: neighbCoords,
+					strokeColor: '#16EF74', //AIXO HA DE DEPENDRE DEL district.lastPosts o algo aixi, JA SIGUI COLOR O OPACITAT (DEL FILL)
+					strokeOpacity: 0.8,
+					strokeWeight: 3,
+					fillColor: '#16EF74', 
+					fillOpacity: 0.35
+				  };
+				  
+				  neighbPolygon[j] = new google.maps.Polygon(neighbPolygonCharacteristics); 
+				  neighbPolygon[j].setMap(map);
 					
 					//TODO: Dibuixar poligon si estas en nivell de zoom que toca
 					//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
