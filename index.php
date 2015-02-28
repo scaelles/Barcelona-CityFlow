@@ -141,7 +141,6 @@
 			xmlhttp.onreadystatechange=function(){
 				if (xmlhttp.readyState==4 && xmlhttp.status==200){
 					JSONstring=xmlhttp.responseText;
-					alert(JSONstring);
 				}
 			}
 			xmlhttp.open("GET","getInstaData.php",false);
@@ -159,9 +158,10 @@
 
 		var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 		queryInsta();
-		alert("HOLA");
+		
+		alert(JSONstring);
 		var arrayJSON = JSON.parse(JSONstring);
-		document.getElementById('footer').innerHTML=var_dump(arrayJSON);
+		alert(arrayJSON[0].nameDistrict);
 		//Els camps disponibles estan en comentari.
 		for(var district in arrayJSON){
 			//district.nameDistrict
