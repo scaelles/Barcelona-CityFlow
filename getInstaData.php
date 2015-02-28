@@ -36,6 +36,8 @@
 			$boundsDistrict[$i]=explode(',',$boundsDistrictStr[$i]);
 		}
 			
+		$centerDistrict=explode(',',$rowDistr['center']);
+		
 		$cNeigh=0;
 		$resNeigh = mysqli_query($con, "SELECT * FROM neighbourhoods WHERE idDistrict='$idDistrict'") or die("Error in neighbourhoods query<br>".mysqli_error($con));
 		while($rowNeigh=mysqli_fetch_array($resNeigh)){
@@ -75,7 +77,7 @@
 			$arrayNeigh[$cNeigh]=array('idNeigh'=>$idNeigh,'name'=>utf8_encode($nameNeigh), 'bounds'=>$boundsNeigh, 'numLastPosts'=>$numPostsNeigh, 'posts'=>$arrayPosts);
 			$cNeigh++;
 		}
-		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'nameDistrict'=>$nameDistrict,'boundsDistrict'=>$boundsDistrict,'neighbs'=>$arrayNeigh);
+		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'nameDistrict'=>$nameDistrict,'boundsDistrict'=>$boundsDistrict,'neighbs'=>$arrayNeigh,'centerDistrict'=>$centerDistrict);
 		$c++;
 	}
 	$plainJSON = json_encode($arrayDistr);

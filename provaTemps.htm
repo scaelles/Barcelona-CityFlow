@@ -1,132 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <title>City Flow</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link href="http://fonts.googleapis.com/css?family=Raleway:400,200,500,600,700,800,300" rel="stylesheet" />
-  <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
-  <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
-	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
-	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
-	<!--script src="js/less-1.3.3.min.js"></script-->
-	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
-	
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
-	  <style>
-		#mapa
-			{
-				position: relative;
-				overflow: hidden;
-				padding: 0px;
-				height:500px;
-			}
-		#headermenu
-			{
-				text-transform: uppercase;
-				background: #16a085;
-				font-family: 'Raleway', sans-serif;
-				font-size: 11pt;
-				font-weight: 400;
-				color: #363636;
-				list-style: none;
-				line-height: normal;
-				text-align: center;
-			}
-			
-		#footer
-			{
-				text-transform: uppercase;
-				background: #333333;
-				font-family: 'Raleway', sans-serif;
-				font-size: 11pt;
-				font-weight: 400;
-				color: #363636;
-				list-style: none;
-				line-height: normal;
-				text-align: center;
-				height: 200px;
-				overflow: hidden;
-				background-size: 100%;
-				text-transform: uppercase
-				letter-spacing: 0.10em;
-				font-size: 11pt;
-				color: #FFF;
-			}
-			
-		#headermenu ul 
-			{
-				list-style: none;
-				line-height: normal;
-				text-align: center;
-			}
-
-		#headermenu li 	
-			{
-				display: inline-block;
-			}
-		#headermenu a 
-			{
-				display: block;
-				letter-spacing: 1px;
-				padding: 0px 15px;
-				text-decoration: none;
-				text-align: center;
-				text-transform: uppercase;
-				font-size: 1em;
-				line-height: 50px;
-				border: none;
-				color: #FFF;
-			}
-			
-			#headermenu a:hover
-			{
-				
-				background-color: #637D4D;
-			}
-			#headermenu a:active
-			{
-				background-color: #637D4D;
-			} 
-			
-		#title
-			{
-				overflow: hidden;
-				background-size: 100%;
-				background: #333333;
-				text-transform: uppercase;
-				font-family: 'Raleway', sans-serif;
-			}
-		#title h3
-			{
-				letter-spacing: 0.10em;
-				font-size: 3em;
-				color: #FFF;
-			}
-							
-	</style>
-
-  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-    <script src="js/html5shiv.js"></script>
-  <![endif]-->
-
-  <!-- Fav and touch icons -->
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
-  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
-  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
-  <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
-  <link rel="shortcut icon" href="img/favicon.png">
-  
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/scripts.js"></script>
-	<script type="text/javascript" src="funcion.js"></script>
-	<script type="text/javascript" src="prototype.js"></script>
-	<script type="text/javascript">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script>
 		//Funcio query Instagram
 		var arrayJSON;
 		var map;
@@ -264,48 +150,16 @@
 		
 		function make_callback(zonaTXT) {
 			return function() {
-				document.getElementById('footer').innerHTML ="<h2>"+decodeURIComponent(escape(zonaTXT))+"</h2>";
+				document.getElementById('Info').innerHTML ="<h2>"+decodeURIComponent(escape(zonaTXT))+"</h2>";
 			};
 		}
 
 		google.maps.event.addDomListener(window, 'load', initialize);
 		google.maps.event.addDomListener(map,'zoom_changed', zoomChanged);
-	</script>
-</head>
-
-<body>
-<div id="global" class="container">
-	<div id="headermenu" class="row clearfix">
-			<div class"col-md-12 column">
-			<ul>
-					
-			
-						<li><a href="javascript:cargarseccion('Homepage')">Homepage</a></li>  
-						<li><a href="javascript:cargarseccion('Trends')">Trends</a></li>  
-						<li><a href="javascript:cargarseccion('About')">About</a></li> 
-						<li><a href="javascript:cargarseccion('Contact')">Contact</a></li> 	   
-					
-			</ul>
-			</div>
-	</div>
-	<div class="row clearfix">
-		<div id="title" class="col-md-12 column">
-			<h3 class="text-center">
-				City Flow
-			</h3>
-		</div>
-	</div>
-	<div class="row clearfix">
-		<div id="mapa" class="col-md-12 column">
-			
-		</div>
-	</div>
-	<div class="row clearfix">
-		<div id="footer" class="col-md-12 column">
-						Homepage
-		</div>
-	</div>
-	
-</div>
-</body>
+    </script>
+  </head>
+  <body>
+    <div id='mapa'></div>
+	<div id="Info"></div>
+  </body>
 </html>
