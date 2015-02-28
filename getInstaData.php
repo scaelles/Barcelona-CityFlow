@@ -29,16 +29,26 @@
 		//For each district, we get all the neighbourhoods
 		$idDistrict = $rowDistr['idDistrict'];
 		$nameDistrict = $rowDistr['name'];
-		$boundsDistrict = $rowDistr['bounds'];
+		$boundsDistrictStr = explode('|',$rowDistr['bounds']);
 		
+		$boundsDistrict=array();
+		for($i=0; $i<count($boundsDistrictStr);$i++){
+			$boundsDistrict[$i]=explode(',',$boundsDistrictStr[$i]);
+		}
+			
 		$cNeigh=0;
 		$resNeigh = mysqli_query($con, "SELECT * FROM neighbourhoods WHERE idDistrict='$idDistrict'") or die("Error in neighbourhoods query<br>".mysqli_error($con));
 		while($rowNeigh=mysqli_fetch_array($resNeigh)){
 			//we have to look for the last 3 posts in the social network, and count posts in last period of time.
 			$idNeigh = $rowNeigh['idNeighb'];
 			$nameNeigh = $rowNeigh['name'];
-			$boundsNeigh = $rowNeigh['bounds'];
-						
+			$boundsNeighStr = explode('|',$rowNeigh['bounds']);
+					
+			$boundsNeigh=array();
+			for($i=0; $i<count($boundsNeighStr);$i++){
+				$boundsNeigh[$i]=explode(',',$boundsNeighStr[$i]);
+			}
+		
 			//Count posts in last X minutes
 			$resNumPosts=mysqli_query($con,"SELECT COUNT(idPost) FROM posts WHERE date BETWEEN DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND NOW() AND idNeighb='$idNeigh'") or die(mysqli_error($con));
 			if(mysqli_num_rows($resNumPosts)>0){
