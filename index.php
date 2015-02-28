@@ -168,7 +168,7 @@
 		for(var district in arrayJSON){
 			//district.nameDistrict
 			//district.boundsDistrict
-			var boundsDistrict = district.boundsDistrict.split("|");
+			alert(district.boundsDistrict);
 			
 			//TODO: Dibuixar poligon si estas en nivell de zoom que toca
 			//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
