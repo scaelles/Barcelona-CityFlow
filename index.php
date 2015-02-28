@@ -127,10 +127,6 @@
 	<script type="text/javascript" src="funcion.js"></script>
 	<script type="text/javascript" src="prototype.js"></script>
 	<script type="text/javascript">
-		// This example displays a marker at the center of Australia.
-		// When the user clicks the marker, an info window opens.
-		// The maximum width of the info window is set to 200 pixels.
-
 		//Funcio query Instagram
 		var JSONstring;
 		var numCoincidencies;
@@ -145,6 +141,7 @@
 			xmlhttp.onreadystatechange=function(){
 				if (xmlhttp.readyState==4 && xmlhttp.status==200){
 					JSONstring=xmlhttp.responseText;
+					alert(JSONstring);
 				}
 			}
 			xmlhttp.open("GET","getInstaData.php",false);
@@ -162,8 +159,9 @@
 
 		var map = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 		queryInsta();
+		alert("HOLA");
 		var arrayJSON = JSON.parse(JSONstring);
-		
+		document.getElementById('footer').innerHTML=var_dump(arrayJSON);
 		//Els camps disponibles estan en comentari.
 		for(var district in arrayJSON){
 			//district.nameDistrict
@@ -193,6 +191,7 @@
 				}
 			}		
 		}
+	}
 
 	google.maps.event.addDomListener(window, 'load', initialize);
 </script>
