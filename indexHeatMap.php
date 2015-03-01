@@ -8,8 +8,8 @@
   <meta name="author" content="">
   <link href="http://fonts.googleapis.com/css?family=Raleway:400,200,500,600,700,800,300" rel="stylesheet" />
   <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
-  <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
-	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false"> </script>	
+  <!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
 	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
 	<!--script src="js/less-1.3.3.min.js"></script-->
 	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
@@ -127,6 +127,9 @@
 	<script type="text/javascript" src="funcion.js"></script>
 	<script type="text/javascript" src="prototype.js"></script>
 	<script type="text/javascript">
+	
+	//PROVA
+
 		//Funcio query Instagram
 		var arrayJSON;
 		var map;
@@ -149,94 +152,31 @@
 			xmlhttp.send();
 		}
 
-		function createPolygon(coords, strokeColorVar, fillColorVar, numLastPosts){
-			//strokeColor: '#FF0000'
-			//fillColor: '#F00000'
-			var polygonCharacteristics = {
-					paths: coords,
-					strokeColor: strokeColorVar, //AIXO HA DE DEPENDRE DEL district.lastPosts o algo aixi, JA SIGUI COLOR O OPACITAT (DEL FILL)
-					strokeOpacity: 0.8,
-					strokeWeight: 1,
-					fillColor: fillColorVar, 
-					fillOpacity: 0.05+ numLastPosts/10
-			};
-			
-			return new google.maps.Polygon(polygonCharacteristics);
-		}
-		
 		function posarInfo(){
-			//Els camps disponibles estan en comentari.
+			var heatmap;
 			var postsDistrict;
-			var fillColor = ["#DC143C", "#C71585", "#FF8C00", "#8A2BE2", "#228B22", "#6495ED", "#F4A460", "#708090", "#FF1493", "#4B0082"];
+			var postsHeatMap=[];
 
 			for(var i=0; i<arrayJSON.length; i++){
 				postsDistrict=0;
 				var district = arrayJSON[i];
-				//district.boundsDistrict
-				//district.centerDistrict
-				
-				var districtCoords = [];
-				for (var myindex in district.boundsDistrict){
-					//alert(district.boundsDistrict[myindex]);
-					districtCoords[myindex]= new google.maps.LatLng(parseFloat(district.boundsDistrict[myindex][0]), parseFloat(district.boundsDistrict[myindex][1]));
-				}
-				//alert(districtCoords);
-				arrayJSON[i].boundsDistrictFloat=districtCoords;
-				arrayJSON[i].centerDistrictFloat=new google.maps.LatLng(parseFloat(districtCoords[0]), parseFloat(districtCoords[1]));
-				
-				//document.getElementById('footer').innerHTML ="<h2>"+arrayJSON[i].nameDistrict+"</h2>";
-				//TODO: Dibuixar poligon si estas en nivell de zoom que toca
-				//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
-				//TODO: Afegir listener si cal
-				
+	
 				for(var j=0; j<district.neighbs.length; j++){
 					var neighb = district.neighbs[j];					
-					alert(neighb.name)
-					//neighb.bounds
-					//neighb.numLastPosts
-						
-					var neighbCoords = [];
-					for (var myindex in neighb.bounds){
-						//alert(district.boundsDistrict[myindex]);
-						neighbCoords[myindex]= new google.maps.LatLng(parseFloat(neighb.bounds[myindex][0]), parseFloat(neighb.bounds[myindex][1]));
-					}
-					neighb.boundsNeighbFloat=neighbCoords;
-				  
-					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.posts.length); 
-					neighb.polygonNeighb.setMap(null);
-					
-
-					
-					//TODO: Dibuixar poligon si estas en nivell de zoom que toca
-					//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
-					//TODO: Afegir listener
-
-					alert (neighb.posts.length);
-					postsDistrict = postsDistrict + neighb.posts.length;
-					
+											
 					for(var k=0; k<neighb.posts.length; k++){
 						var post = neighb.posts[k];
-						//alert(parseFloat(post.lat));
-						//alert(post.tags)
-						//post.im_link
-						//post.lat
-						//post.long
-						
-						//TODO: Afegir post al heat map
+     					postsHeatMap.push(new google.maps.LatLng(parseFloat(post.lat), parseFloat(post.long)));
 					}
-					district.neighbs[j]=neighb;
 				}
-				
-				alert (postsDistrict);
-				polygDist = createPolygon(districtCoords,fillColor[i],fillColor[i],postsDistrict); 
-				arrayJSON[i].polygonDistrict=polygDist;
-				arrayJSON[i].polygonDistrict.setMap(map);
-				
-				google.maps.event.addListener(arrayJSON[i].polygonDistrict, 'mouseover', make_callback(arrayJSON[i].nameDistrict));
-				
 			}
-			google.maps.event.addListener(map, 'zoom_changed', zoomChanged);
+			var pointArray = new google.maps.MVCArray(postsHeatMap);
+			var heatmap = new google.maps.visualization.HeatmapLayer({
+				data: pointArray
+			});
+			heatmap.setMap(map);
 		}
+		
 		function initialize() {
 			var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
 			var markerPos = new google.maps.LatLng(41.397555, 2.191187);
@@ -245,9 +185,9 @@
 				zoom: 13,
 				center: myLatlng
 			};
-
-			map = new google.maps.Map(document.getElementById('mapa'),mapOptions);
 			queryInsta();
+			map = new google.maps.Map(document.getElementById('mapa'),mapOptions);
+
 		}
 		
 		function zoomChanged(){

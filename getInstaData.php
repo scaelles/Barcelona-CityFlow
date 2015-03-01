@@ -63,12 +63,12 @@
 			//Retrieve 3 last images in neighbourhood
 			$cPosts=0;
 			$arrayPosts=array();
-			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.long FROM posts WHERE idNeighb='$idNeigh' ORDER BY date DESC LIMIT 3") or die(mysqli_error($con));
+			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' ORDER BY date DESC LIMIT 3") or die(mysqli_error($con));
 			while($rowPosts=mysqli_fetch_array($resPosts)){ 
 				$tagsPost=$rowPosts['tags'];
 				$linkPost=$rowPosts['im_link'];
 				$latPost=$rowPosts['lat'];
-				$longPost=$rowPosts['long'];
+				$longPost=$rowPosts['lng'];
 				
 				$arrayPosts[$cPosts]=array('lat'=>$latPost, 'long'=>$longPost, 'link'=>$linkPost, 'tags'=>$tagsPost);
 				$cPosts++;
