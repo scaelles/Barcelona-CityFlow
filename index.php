@@ -9,6 +9,7 @@
   <link href="http://fonts.googleapis.com/css?family=Raleway:400,200,500,600,700,800,300" rel="stylesheet" />
   <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
   <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false"> </script>
 	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
 	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
 	<!--script src="js/less-1.3.3.min.js"></script-->
@@ -130,6 +131,8 @@
 		//Funcio query Instagram
 		var arrayJSON;
 		var map;
+		var heatmap;
+		var statusHeat=false;
 		function queryInsta(){
 			if (window.XMLHttpRequest){
 				// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -167,6 +170,7 @@
 		function posarInfo(){
 			//Els camps disponibles estan en comentari.
 			var postsDistrict;
+			var postsHeatMap=[];
 			var fillColor = ["#DC143C", "#C71585", "#FF8C00", "#8A2BE2", "#228B22", "#6495ED", "#F4A460", "#708090", "#FF1493", "#4B0082"];
 
 			for(var i=0; i<arrayJSON.length; i++){
@@ -222,7 +226,7 @@
 						//post.lat
 						//post.long
 						
-						//TODO: Afegir post al heat map
+						postsHeatMap.push(new google.maps.LatLng(parseFloat(post.lat), parseFloat(post.long)));
 					}
 					district.neighbs[j]=neighb;
 				}
@@ -231,6 +235,12 @@
 				polygDist = createPolygon(districtCoords,fillColor[i],fillColor[i],postsDistrict); 
 				arrayJSON[i].polygonDistrict=polygDist;
 				arrayJSON[i].polygonDistrict.setMap(map);
+				
+				var pointArray = new google.maps.MVCArray(postsHeatMap);
+				heatmap = new google.maps.visualization.HeatmapLayer({
+					data: pointArray
+				});
+				heatmap.setMap(null);
 				
 				google.maps.event.addListener(arrayJSON[i].polygonDistrict, 'mouseover', make_callback(arrayJSON[i].nameDistrict));
 				
@@ -251,24 +261,62 @@
 		}
 		
 		function zoomChanged(){
-			if (map.getZoom()>=14){
-				//Amagar districtes i mostrar barris
-				for(var i=0; i<arrayJSON.length; i++){
-					arrayJSON[i].polygonDistrict.setMap(null);
-					for(var j=0; j<arrayJSON[i].neighbs.length; j++){
-						arrayJSON[i].neighbs[j].polygonNeighb.setMap(map);
-						google.maps.event.addListener(arrayJSON[i].neighbs[j].polygonNeighb, 'mouseover', make_callback(arrayJSON[i].neighbs[j].name));
+			if(statusHeat==false){
+				if (map.getZoom()>=14){
+					//Amagar districtes i mostrar barris
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(null);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(map);
+							google.maps.event.addListener(arrayJSON[i].neighbs[j].polygonNeighb, 'mouseover', make_callback(arrayJSON[i].neighbs[j].name));
 
+						}
+					}
+				}else{
+					//Amagar barris i mostrar districtes
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(map);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
+						}
 					}
 				}
-			}else{
-				//Amagar barris i mostrar districtes
+			}
+		}
+		
+		function toggleHeatMap(){
+			//Amagar districtes i mostrar barris
+			if(statusHeat==false){
 				for(var i=0; i<arrayJSON.length; i++){
-					arrayJSON[i].polygonDistrict.setMap(map);
+					arrayJSON[i].polygonDistrict.setMap(null);
 					for(var j=0; j<arrayJSON[i].neighbs.length; j++){
 						arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
 					}
 				}
+				heatmap.setMap(map);
+				statusHeat=true;
+			}else{
+				heatmap.setMap(null);
+				if (map.getZoom()>=14){
+					//Amagar districtes i mostrar barris
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(null);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(map);
+							google.maps.event.addListener(arrayJSON[i].neighbs[j].polygonNeighb, 'mouseover', make_callback(arrayJSON[i].neighbs[j].name));
+
+						}
+					}
+				}else{
+					//Amagar barris i mostrar districtes
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(map);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
+						}
+					}
+				}
+				statusHeat=false;
 			}
 		}
 		
@@ -293,7 +341,7 @@
 						<li><a href="javascript:cargarseccion('Homepage')">Homepage</a></li>  
 						<li><a href="javascript:cargarseccion('Trends')">Trends</a></li>  
 						<li><a href="javascript:cargarseccion('About')">About</a></li> 
-						<li><a href="javascript:cargarseccion('Contact')">Contact</a></li> 	   
+						<li><a href="javascript:toggleHeatMap()">Toggle Heat Map</a></li> 	   
 					
 			</ul>
 			</div>
