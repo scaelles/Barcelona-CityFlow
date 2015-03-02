@@ -360,7 +360,7 @@
 	</div>
 	<div class="row clearfix">
 		<div id="footer" class="col-md-12 column">
-						Homepage
+						Homepage 
 		</div>
 	</div>
 	
