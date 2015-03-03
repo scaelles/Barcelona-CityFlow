@@ -231,7 +231,7 @@
 					district.neighbs[j]=neighb;
 				}
 				
-				//alert (postsDistrict);
+				//alert (postsDistrict); 
 				polygDist = createPolygon(districtCoords,fillColor[i],fillColor[i],postsDistrict); 
 				arrayJSON[i].polygonDistrict=polygDist;
 				arrayJSON[i].polygonDistrict.setMap(map);
