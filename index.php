@@ -195,7 +195,7 @@
 				
 				for(var j=0; j<district.neighbs.length; j++){
 					var neighb = district.neighbs[j];					
-					alert(neighb.name)
+					//alert(neighb.name)
 					//neighb.bounds
 					//neighb.numLastPosts
 						
@@ -215,7 +215,7 @@
 					//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
 					//TODO: Afegir listener
 
-					alert (neighb.posts.length);
+					//alert (neighb.posts.length);
 					postsDistrict = postsDistrict + neighb.posts.length;
 					
 					for(var k=0; k<neighb.posts.length; k++){
