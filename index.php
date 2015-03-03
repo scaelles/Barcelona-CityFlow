@@ -195,7 +195,7 @@
 				
 				for(var j=0; j<district.neighbs.length; j++){
 					var neighb = district.neighbs[j];					
-					alert(neighb.name)
+					//alert(neighb.name)
 					//neighb.bounds
 					//neighb.numLastPosts
 						
@@ -206,7 +206,7 @@
 					}
 					neighb.boundsNeighbFloat=neighbCoords;
 				  
-					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.posts.length); 
+					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.numLastPosts); 
 					neighb.polygonNeighb.setMap(null);
 					
 
@@ -215,8 +215,8 @@
 					//TODO: Fer infoWindow corresponent si estàs al nivell de zoom
 					//TODO: Afegir listener
 
-					alert (neighb.posts.length);
-					postsDistrict = postsDistrict + neighb.posts.length;
+					//alert (neighb.posts.length);
+					postsDistrict = postsDistrict + neighb.numLastPosts;
 					
 					for(var k=0; k<neighb.posts.length; k++){
 						var post = neighb.posts[k];
@@ -231,7 +231,7 @@
 					district.neighbs[j]=neighb;
 				}
 				
-				alert (postsDistrict);
+				//alert (postsDistrict);
 				polygDist = createPolygon(districtCoords,fillColor[i],fillColor[i],postsDistrict); 
 				arrayJSON[i].polygonDistrict=polygDist;
 				arrayJSON[i].polygonDistrict.setMap(map);

@@ -30,6 +30,7 @@
 		$idDistrict = $rowDistr['idDistrict'];
 		$nameDistrict = $rowDistr['name'];
 		$boundsDistrictStr = explode('|',$rowDistr['bounds']);
+		//echo $nameDistrict.'<br>';
 		
 		$boundsDistrict=array();
 		for($i=0; $i<count($boundsDistrictStr);$i++){
@@ -45,6 +46,7 @@
 			$idNeigh = $rowNeigh['idNeighb'];
 			$nameNeigh = $rowNeigh['name'];
 			$boundsNeighStr = explode('|',$rowNeigh['bounds']);
+			//echo "--".$nameNeigh."<br>";
 					
 			$boundsNeigh=array();
 			for($i=0; $i<count($boundsNeighStr);$i++){
@@ -65,11 +67,12 @@
 			$arrayPosts=array();
 			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' ORDER BY date DESC LIMIT 3") or die(mysqli_error($con));
 			while($rowPosts=mysqli_fetch_array($resPosts)){ 
-				$tagsPost=$rowPosts['tags'];
+				$tagsPost=htmlspecialchars($rowPosts['tags']);
 				$linkPost=$rowPosts['im_link'];
 				$latPost=$rowPosts['lat'];
 				$longPost=$rowPosts['lng'];
 				
+				//echo "-- --".$linkPost.'<br>';
 				$arrayPosts[$cPosts]=array('lat'=>$latPost, 'long'=>$longPost, 'link'=>$linkPost, 'tags'=>$tagsPost);
 				$cPosts++;
 			}
