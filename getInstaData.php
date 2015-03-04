@@ -64,7 +64,8 @@
 			//Retrieve 3 last images in neighbourhood
 			$cPosts=0;
 			$arrayPosts=array();
-			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' AND date BETWEEN DATE_SUB(NOW(),INTERVAL 10 MINUTE) AND NOW() ORDER BY date") or die(mysqli_error($con));
+			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' AND DATE_SUB(date,INTERVAL 1 HOUR) BETWEEN DATE_SUB(NOW(), INTERVAL 15 MINUTE) AND NOW() ORDER BY date DESC");
+			//echo mysqli_num_rows($resPosts);
 			while($rowPosts=mysqli_fetch_array($resPosts)){ 
 				$tagsPost=htmlspecialchars($rowPosts['tags']);
 				$linkPost=$rowPosts['im_link'];
