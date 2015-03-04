@@ -80,7 +80,7 @@
 			$arrayNeigh[$cNeigh]=array('idNeigh'=>$idNeigh,'name'=>utf8_encode($nameNeigh), 'bounds'=>$boundsNeigh, 'numLastPosts'=>mysqli_num_rows($resPosts), 'posts'=>$arrayPosts);
 			$cNeigh++;
 		}
-		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'nameDistrict'=>$nameDistrict,'boundsDistrict'=>$boundsDistrict,'neighbs'=>$arrayNeigh,'centerDistrict'=>$centerDistrict);
+		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'name'=>$nameDistrict,'boundsDistrict'=>$boundsDistrict,'neighbs'=>$arrayNeigh,'centerDistrict'=>$centerDistrict);
 		$c++;
 	}
 	$plainJSON = json_encode($arrayDistr);

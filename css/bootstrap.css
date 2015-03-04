@@ -305,12 +305,11 @@ html {
 }
 
 body {
-  font-family: 'Raleway', sans-serif;
-  font-size: 11pt;
-  font-weight: 400;
-  color: #363636;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
   line-height: 1.428571429;
-  background-color: #16A085;
+  color: #333333;
+  background-color: #ffffff;
 }
 
 input,
@@ -323,7 +322,7 @@ textarea {
 }
 
 a {
-  color: #2e4242;
+  color: #428bca;
   text-decoration: none;
 }
 
@@ -3491,7 +3490,7 @@ input[type="button"].btn-block {
 .dropdown-menu > .active > a:focus {
   color: #ffffff;
   text-decoration: none;
-  background-color: #2e4242;
+  background-color: #428bca;
   outline: 0;
 }
 
@@ -4061,7 +4060,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .nav .open > a:hover,
 .nav .open > a:focus {
   background-color: #eeeeee;
-  border-color: #2e4242;
+  border-color: #428bca;
 }
 
 .nav .open > a .caret,
@@ -4180,7 +4179,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
   color: #ffffff;
-  background-color: #2e4242;
+  background-color: #428bca;
 }
 
 .nav-pills > li.active > a .caret,
@@ -5178,7 +5177,7 @@ a.badge:focus {
 
 a.list-group-item.active > .badge,
 .nav-pills > .active > a > .badge {
-  color: #2e4242;
+  color: #428bca;
   background-color: #ffffff;
 }
 
