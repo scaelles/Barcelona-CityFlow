@@ -1,7 +1,6 @@
 <?php
 	require_once("include/settings.php");
 	//Parameters
-	$periodUpdate = 120; //In minutes
 	
 	// //Structure JSON file
 	// [{
@@ -54,18 +53,18 @@
 			}
 		
 			//Count posts in last X minutes
-			$resNumPosts=mysqli_query($con,"SELECT COUNT(idPost) FROM posts WHERE date BETWEEN DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND NOW() AND idNeighb='$idNeigh'") or die(mysqli_error($con));
-			if(mysqli_num_rows($resNumPosts)>0){
-				$numPostsNeigh = mysqli_fetch_array($resNumPosts);
-				$numPostsNeigh=$numPostsNeigh[0];
-			}else{
-				$numPostsNeigh=0;
-			}
+			// $resNumPosts=mysqli_query($con,"SELECT COUNT(idPost) FROM posts WHERE date BETWEEN DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND NOW() AND idNeighb='$idNeigh'") or die(mysqli_error($con));
+			// if(mysqli_num_rows($resNumPosts)>0){
+				// $numPostsNeigh = mysqli_fetch_array($resNumPosts);
+				// $numPostsNeigh=$numPostsNeigh[0];
+			// }else{
+				// $numPostsNeigh=0;
+			// }
 			
 			//Retrieve 3 last images in neighbourhood
 			$cPosts=0;
 			$arrayPosts=array();
-			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' ORDER BY date DESC LIMIT 3") or die(mysqli_error($con));
+			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' AND date BETWEEN DATE_SUB(NOW(),INTERVAL 10 MINUTE) AND NOW() ORDER BY date") or die(mysqli_error($con));
 			while($rowPosts=mysqli_fetch_array($resPosts)){ 
 				$tagsPost=htmlspecialchars($rowPosts['tags']);
 				$linkPost=$rowPosts['im_link'];
@@ -77,7 +76,7 @@
 				$cPosts++;
 			}
 			//Write output array
-			$arrayNeigh[$cNeigh]=array('idNeigh'=>$idNeigh,'name'=>utf8_encode($nameNeigh), 'bounds'=>$boundsNeigh, 'numLastPosts'=>$numPostsNeigh, 'posts'=>$arrayPosts);
+			$arrayNeigh[$cNeigh]=array('idNeigh'=>$idNeigh,'name'=>utf8_encode($nameNeigh), 'bounds'=>$boundsNeigh, 'numLastPosts'=>mysqli_num_rows($resPosts), 'posts'=>$arrayPosts);
 			$cNeigh++;
 		}
 		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'nameDistrict'=>$nameDistrict,'boundsDistrict'=>$boundsDistrict,'neighbs'=>$arrayNeigh,'centerDistrict'=>$centerDistrict);
