@@ -242,7 +242,7 @@
 				});
 				heatmap.setMap(null);
 				
-				google.maps.event.addListener(arrayJSON[i].polygonDistrict, 'mouseover', make_callback(arrayJSON[i].nameDistrict));
+				google.maps.event.addListener(arrayJSON[i].polygonDistrict, 'mouseover', make_callback(arrayJSON[i]));
 				
 			}
 			google.maps.event.addListener(map, 'zoom_changed', zoomChanged);
@@ -320,9 +320,9 @@
 			}
 		}
 		
-		function make_callback(zonaTXT) {
+		function make_callback(zona) {
 			return function() {
-				document.getElementById('footer').innerHTML ="<h2>"+decodeURIComponent(escape(zonaTXT))+"</h2>";
+				document.getElementById('footer').innerHTML ="<h2>"+decodeURIComponent(escape(zona.name))+"</h2>";
 			};
 		}
 
