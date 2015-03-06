@@ -19,13 +19,25 @@
   <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false"> </script>
 	<style>
-	#mapa
-			{
-				position: relative;
+	html,body{height:100%;}
+	#mapa{
+				position: a;
 				overflow: hidden;
 				padding: 0px;
-				height:600px;
-			}
+				height: 100%;
+				width:100%;
+				height:100vh;
+				min-height:100%;
+	}
+	#loadingDiv{
+		width: 230px;
+		position: absolute;
+		left: 45%;
+		margin-left: -50px;
+		top: 40%;
+		
+	}
+			
 		@media (min-width: 768px) {
   .navbar-collapse {
     height: auto;
@@ -63,6 +75,11 @@
 .navbar-collapse .navbar-nav.navbar-right:last-child {
     margin-right: 0;
 }
+}
+
+.pcaption{
+	font-size:20px;
+	
 }
 </style>
 
@@ -178,7 +195,7 @@
 				
 				arrayJSON[i] = district;
 				google.maps.event.addListener(district.polygonDistrict, 'mouseover', make_callback(district,0));
-				document.getElementById('infoLateral').innerHTML="Ready to go";
+				document.getElementById('loadingDiv').style.display="none";
 			}
 			
 			var pointArray = new google.maps.MVCArray(postsHeatMap);
@@ -203,6 +220,7 @@
 			map = new google.maps.Map(document.getElementById('mapa'),mapOptions);
 			queryInsta();
 			document.getElementById('homeLink').className="active";
+			document.getElementById('loadingDiv').style.display="inline-block";
 		}
 		
 		function make_callback(zona, tipus) {
@@ -247,6 +265,8 @@
 				heatmap.setMap(map);
 				statusHeat=true;
 			}else{
+				//Show info in lateral column
+				document.getElementById('infoLateral').innerHTML="<div class='page-header'><h2 align='center'><b>Neighbourhoods</b></h2></div><h4>Move the cursor over the different districts to get more information about them.</h4><h4>Zoom in to take a look at Barcelona neighbourhoods!</h4>";
 				heatmap.setMap(null);
 				if (map.getZoom()>=14){
 					//Amagar districtes i mostrar barris
@@ -390,7 +410,7 @@
 						<div class='thumbnail'>
 							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
 							<div class='caption'>
-								<h4>Ricard Boada</h4>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Ricard Boada</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=245451857" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
 						</div>
 					</div>
@@ -398,7 +418,7 @@
 						<div class='thumbnail'>
 							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
 							<div class='caption'>
-								<h4>Sergi Caelles</h4>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Sergi Caelles</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=211869799" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
 						</div>
 					</div>
@@ -406,7 +426,7 @@
 						<div class='thumbnail'>
 							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
 							<div class='caption'>
-								<h4>Mariona Dalmau</h4>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Mariona Dalmau</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=182399562" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
 						</div>
 					</div>
@@ -414,7 +434,7 @@
 						<div class='thumbnail'>
 							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
 							<div class='caption'>
-								<h4>Alejandro Fernández</h4>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Alejandro Fernández</p></td><td align=right"><p class="pcaption"><img src="img/linkedin.png" width="23px"></p></td></tr></table>
 							</div>
 						</div>
 					</div>
@@ -422,7 +442,7 @@
 						<div class='thumbnail'>
 							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
 							<div class='caption'>
-								<h4>Alberto Gómez</h4>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Alberto Gómez</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=347278313" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
 						</div>
 					</div>
@@ -430,7 +450,7 @@
 						<div class='thumbnail'>
 							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
 							<div class='caption'>
-								<h4>Miquel Martí</h4>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Miquel Martí</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=175904290" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
 						</div>
 					</div>
@@ -450,8 +470,28 @@
 						</div>
 					</div>
 			</div>
+			
+			<div id="loadingDiv" style="display:none;">
+					<div class='row clearfix'>
+						<div class='col-md-12 column'>
+							<div class='jumbotron center'>
+								<p><img src="img/loading.gif" width="25px"></img> <b>Loading...</b></p>
+							</div>
+						</div>
+					</div>
+			</div>
 		</div><!-- close main column -->
-		<div class="col-md-2 column" id="infoLateral">Loading...</div>
+		<div class="col-md-2 column" id="infoLateral">
+			<div class="page-header">
+				<h2>Welcome to <b>City Flow!</b></h2>
+			</div>
+			<h4>CityFlow provides real-time information about the <strong>hot spots</strong> in Barcelona, based on the information given by two sources: </h4>
+			<ul>
+					<li><strong>Instagram</strong> API</li>
+					<li>Future pedestrian <strong>flow sensors</li>
+				</ul>
+			</div>
+		
 	</div>
 </div>
 </body>
