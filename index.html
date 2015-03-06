@@ -18,6 +18,7 @@
   <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
   <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false"> </script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<style>
 	html,body{height:100%;}
 	#mapa{
@@ -35,7 +36,14 @@
 		left: 45%;
 		margin-left: -50px;
 		top: 40%;
-		
+	}
+	
+	#piechart_3d{
+		width: 700px;
+		height:400px;
+		position:absolute;
+		float: left;
+		margin-top: 15px;
 	}
 			
 		@media (min-width: 768px) {
@@ -104,6 +112,13 @@
 		var map;
 		var heatmap;
 		var statusHeat=true;
+		
+		//NOU DEL CHART
+		var postsChart=[['District', 'Number of posts']];
+		var chart;
+		//NOU DEL CHART
+        google.load("visualization", "1", {packages:["corechart"]});
+		
 		function queryInsta(){
 			if (window.XMLHttpRequest){
 				// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -189,6 +204,8 @@
 					district.neighbs[j]=neighb;
 				}
 				
+				postsChart.push([decodeHTML(district.name), district.postsDistrict]);
+				
 				//Create polygon for district with corresponding numLastPosts
 				district.polygonDistrict=createPolygon(district.boundsDistrictFloat,fillColor[i],fillColor[i],district.postsDistrict);
 				district.polygonDistrict.setMap(null);
@@ -203,10 +220,23 @@
 				data: pointArray
 			});
 			heatmap.setMap(map);
+			heatmap.set('radius', 35);
 			
 			google.maps.event.addDomListener(map,'zoom_changed', zoomChanged);
 				
 		}
+		
+		function drawChart() {
+			//alert(postsChart)
+			var data = google.visualization.arrayToDataTable(postsChart);
+			var options = {
+			  title: 'Distribution of posts in the last 10 minutes',
+			  is3D: true,
+			};
+			chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+			chart.draw(data, options);
+			//chart.clearChart(); //AIXO BORRA TOT EL CHART
+        }
 		
 		function initialize() {
 			var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
@@ -388,9 +418,15 @@
 				capaStats.style.left='10px';
 				capaStats.style.display="inline";
 				document.getElementById('about').style.display="none";
+				drawChart(); //NOU!!!
+				capaStats.style.display="block-inline";
 			}else{
 				capaStats.style.display="none";
 			}
+		}
+		
+		function decodeHTML(str){
+			return str.replace("&iuml;", "ï").replace("&agrave;","à").replace("&oacute;", "ó").replace("&iacute;", "í");
 		}
 		
 		google.maps.event.addDomListener(window, 'load', initialize);
@@ -490,11 +526,11 @@
 			<div id="stats" style="display:none;">
 					<div class='row clearfix'>
 						<div class='col-md-12 column'>
-							<div class='jumbotron'>
+							<div class='jumbotron' style="padding-bottom:5px;overflow:hidden;">
 								<a href="javascript:toggleStatistics()" style="text-align: right;float: right;">Close</a>
 								<h1>Statistics</h1>
-								<p>CityFlow provides real-time information about the hot spots in Barcelona, based on the information given by two sources:  Instagram API and pedestrian flow sensors.</p>
-								<a href="http://www.global.datafest.net/a/datafest.net/globalurbandatafest/projects/nightflow">Global Urban Datafest Page</a>
+								<p>Here we show the number of instagrams posted in the last 10 minutes, ordered by districts in Barcelona, to see the hottest places right now! </p>
+								<div id="piechart_3d"></div>
 							</div>
 						</div>
 					</div>
