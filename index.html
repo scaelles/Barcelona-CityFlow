@@ -76,7 +76,7 @@
   <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
   <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
   <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
-  <link rel="shortcut icon" href="img/favicon.png">
+  <link rel="shortcut icon" href="logo.jpg">
   
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -178,6 +178,7 @@
 				
 				arrayJSON[i] = district;
 				google.maps.event.addListener(district.polygonDistrict, 'mouseover', make_callback(district,0));
+				document.getElementById('infoLateral').innerHTML="Ready to go";
 			}
 			
 			var pointArray = new google.maps.MVCArray(postsHeatMap);
@@ -315,11 +316,34 @@
 				capaAbout.style.top='10px';
 				capaAbout.style.left='10px';
 				capaAbout.style.display="inline";
+				document.getElementById('stats').style.display="none";
 			}else{
 				capaAbout.style.display="none";
 			}
 		}
 
+		function toggleStatistics(){
+			//var htmlTXT="<div class='row clearfix'><div class='col-md-12 column'><div class='jumbotron'><h2>City Flow</h2></div><p>"+
+			//	"This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."+	
+			//	"</p>";
+			//document.getElementById('infoLateral').innerHTML = htmlTXT;
+			document.getElementById('aboutLink').className="";
+			document.getElementById('homeLink').className="";
+			document.getElementById('statsLink').className="active";
+			document.getElementById('neighLink').className="";
+			
+			var capaStats = document.getElementById('stats');
+			if(capaStats.style.display=="none"){
+				capaStats.style.position='absolute';
+				capaStats.style.top='10px';
+				capaStats.style.left='10px';
+				capaStats.style.display="inline";
+				document.getElementById('about').style.display="none";
+			}else{
+				capaStats.style.display="none";
+			}
+		}
+		
 		google.maps.event.addDomListener(window, 'load', initialize);
 	</script>
 </head>
@@ -330,12 +354,21 @@
 		<div class="col-md-2 column">
 			<p align="center"><a href=""><img src="logo.jpg" width="150"></img></a></p>
 			<nav class="navbar navbar-default" role="navigation">
+			  <div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				  <span class="sr-only">Toggle navigation</span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				</button>
+				<!--<a class="navbar-brand" href="#">Brand</a>-->
+			  </div>
 			  <!-- Collect the nav links, forms, and other content for toggling -->
 			  <div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav">
 				  <li id="homeLink"><a href="">Homepage</a></li>
 				  <li id="neighLink"><a href="javascript:toggleHeatMap()">Neighbourhoods</a></li>
-				  <li id="statsLink"><a href="">Statistics</a></li>
+				  <li id="statsLink"><a href="javascript:toggleStatistics()">Statistics</a></li>
 				  <li id="aboutLink"><a href="javascript:toggleAbout()">About</a></li>
 				</ul>
 			  </div><!-- /.navbar-collapse -->
@@ -349,7 +382,7 @@
 						<div class='jumbotron'>
 							<a href="javascript:toggleAbout()" style="text-align: right;float: right;">Close</a>
 							<h1>We are City Flow!</h1>
-							<p>CityFlow provides real-time information about the hot spots in Barcelona, based on the information given by two sources:  Instagram API and pedestrian flow sensors.</p>
+							<p>CityFlow provides real-time information about the hot spots in Barcelona, based on the information given by two sources:  Instagram API and future pedestrian flow sensors.</p>
 							<a href="http://www.global.datafest.net/a/datafest.net/globalurbandatafest/projects/nightflow">Global Urban Datafest Page</a>
 						</div>
 					</div>
@@ -403,9 +436,23 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="col-md-2 column" id="infoLateral">		</div>
-		</div>
+		
+		
+			<div id="stats" style="display:none;">
+					<div class='row clearfix'>
+						<div class='col-md-12 column'>
+							<div class='jumbotron'>
+								<a href="javascript:toggleStatistics()" style="text-align: right;float: right;">Close</a>
+								<h1>Statistics</h1>
+								<p>CityFlow provides real-time information about the hot spots in Barcelona, based on the information given by two sources:  Instagram API and pedestrian flow sensors.</p>
+								<a href="http://www.global.datafest.net/a/datafest.net/globalurbandatafest/projects/nightflow">Global Urban Datafest Page</a>
+							</div>
+						</div>
+					</div>
+			</div>
+		</div><!-- close main column -->
+		<div class="col-md-2 column" id="infoLateral">Loading...</div>
 	</div>
+</div>
 </body>
 </html>
