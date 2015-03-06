@@ -18,6 +18,7 @@
   <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
   <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false"> </script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	<style>
 	html,body{height:100%;}
 	#mapa{
@@ -103,7 +104,14 @@
 		var arrayJSON;
 		var map;
 		var heatmap;
-		var statusHeat=true;
+		var statusHeat=true;	
+		//NOU DEL CHART
+		var postsChart=[['District', 'Number of posts']];
+		var chart;
+		//NOU DEL CHART
+        google.load("visualization", "1", {packages:["corechart"]});
+		
+
 		function queryInsta(){
 			if (window.XMLHttpRequest){
 				// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -123,8 +131,8 @@
 			xmlhttp.send();
 		}
 
-		
-		function createPolygon(coords, strokeColorVar, fillColorVar, numLastPosts){
+		//afegim el parametre opacitat, variable segons si és neighbourhood o district
+		function createPolygon(coords, strokeColorVar, fillColorVar, numLastPosts, opacity){
 			//strokeColor: '#FF0000'
 			//fillColor: '#F00000'
 			var polygonCharacteristics = {
@@ -133,7 +141,7 @@
 					strokeOpacity: 0.8,
 					strokeWeight: 1,
 					fillColor: fillColorVar, 
-					fillOpacity: 0.05+ numLastPosts/10
+					fillOpacity: 0.05+ numLastPosts/opacity
 			};
 			
 			return new google.maps.Polygon(polygonCharacteristics);
@@ -143,6 +151,8 @@
 			//Els camps disponibles estan en comentari.
 			var fillColor = ["#DC143C", "#C71585", "#FF8C00", "#8A2BE2", "#228B22", "#6495ED", "#F4A460", "#708090", "#FF1493", "#4B0082"];
 			var postsHeatMap=[];
+			var opacityNeighb = 50;
+			var opacityDistrict = 500;
 			
 			for(var i=0; i<arrayJSON.length; i++){
 				var district = arrayJSON[i];
@@ -169,7 +179,7 @@
 					}
 					neighb.boundsNeighbFloat=neighbCoords;
 					
-					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.numLastPosts); 
+					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.numLastPosts, opacityNeighb); 
 					neighb.polygonNeighb.setMap(null);
 					
 					district.postsDistrict=district.postsDistrict+neighb.numLastPosts;
@@ -189,8 +199,11 @@
 					district.neighbs[j]=neighb;
 				}
 				
+				//alert(district.name);
+				postsChart.push([district.name, district.postsDistrict]);
+
 				//Create polygon for district with corresponding numLastPosts
-				district.polygonDistrict=createPolygon(district.boundsDistrictFloat,fillColor[i],fillColor[i],district.postsDistrict);
+				district.polygonDistrict=createPolygon(district.boundsDistrictFloat,fillColor[i],fillColor[i],district.postsDistrict, opacityDistrict);
 				district.polygonDistrict.setMap(null);
 				
 				arrayJSON[i] = district;
@@ -202,11 +215,24 @@
 			heatmap = new google.maps.visualization.HeatmapLayer({
 				data: pointArray
 			});
+			heatmap.set('radius', 35);
 			heatmap.setMap(map);
-			
+
 			google.maps.event.addDomListener(map,'zoom_changed', zoomChanged);
 				
 		}
+
+	    function drawChart() {
+			//alert(postsChart)
+			var data = google.visualization.arrayToDataTable(postsChart);
+			var options = {
+			  title: 'Distribution of posts in the last 10 minutes',
+			  is3D: true,
+			};
+			chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+			chart.draw(data, options);
+			//chart.clearChart(); //AIXO BORRA TOT EL CHART
+        }
 		
 		function initialize() {
 			var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
@@ -359,8 +385,10 @@
 				capaStats.style.left='10px';
 				capaStats.style.display="inline";
 				document.getElementById('about').style.display="none";
+				drawChart(); //NOU!!!
 			}else{
 				capaStats.style.display="none";
+				chart.clearChart(); //eliminem
 			}
 		}
 		
@@ -494,5 +522,7 @@
 		
 	</div>
 </div>
+    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+
 </body>
 </html>
