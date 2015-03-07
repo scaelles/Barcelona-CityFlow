@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>City Flow · Barcelona Global Urban Datafest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+	<!--script src="js/less-1.3.3.min.js"></script-->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+	
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	  <link href="http://fonts.googleapis.com/css?family=Raleway:400,200,500,600,700,800,300" rel="stylesheet" />
+  <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+  <script src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false"> </script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<style>
+	html,body{height:100%;}
+	#mapa{
+				position: a;
+				overflow: hidden;
+				padding: 0px;
+				height: 100%;
+				width:100%;
+				height:100vh;
+				min-height:100%;
+	}
+	#loadingDiv{
+		width: 230px;
+		position: absolute;
+		left: 45%;
+		margin-left: -50px;
+		top: 40%;
+	}
+	
+	#piechart_3d{
+		width: 700px;
+		height:400px;
+		position:absolute;
+		float: left;
+		margin-top: 15px;
+	}
+			
+		@media (min-width: 768px) {
+  .navbar-collapse {
+    height: auto;
+    border-top: 0;
+    box-shadow: none;
+    max-height: none;
+    padding-left:0;
+    padding-right:0;
+  }
+  .navbar-collapse.collapse {
+    display: block !important;
+    width: auto !important;
+    padding-bottom: 0;
+    overflow: visible !important;
+  }
+  .navbar-collapse.in {
+    overflow-x: visible;
+  }
+
+.navbar
+{
+	max-width:300px;
+	margin-right: 0;
+	margin-left: 0;
+}	
+
+.navbar-nav,
+.navbar-nav > li,
+.navbar-left,
+.navbar-right,
+.navbar-header
+{float:none !important;}
+
+.navbar-right .dropdown-menu {left:0;right:auto;}
+.navbar-collapse .navbar-nav.navbar-right:last-child {
+    margin-right: 0;
+}
+}
+
+.pcaption{
+	font-size:20px;
+	
+}
+</style>
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
+
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="logo.jpg">
+  
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/scripts.js"></script>
+	<script type="text/javascript">
+		//Funcio query Instagram
+		var arrayJSON;
+		var map;
+		var heatmap;
+		var statusHeat=true;
+		
+		//NOU DEL CHART
+		var postsChart=[['District', 'Number of posts']];
+		var chart;
+		//NOU DEL CHART
+        google.load("visualization", "1", {packages:["corechart"]});
+		
+		function queryInsta(){
+			if (window.XMLHttpRequest){
+				// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			}else{// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			
+			xmlhttp.onreadystatechange=function(){
+				if (xmlhttp.readyState==4 && xmlhttp.status==200){
+					JSONstring=xmlhttp.responseText;
+					arrayJSON = JSON.parse(JSONstring);
+					posarInfo();
+				}
+			}
+			xmlhttp.open("GET","getInstaData.php",true);
+			xmlhttp.send();
+		}
+
+		
+		function createPolygon(coords, strokeColorVar, fillColorVar, numLastPosts){
+			//strokeColor: '#FF0000'
+			//fillColor: '#F00000'
+			var polygonCharacteristics = {
+					paths: coords,
+					strokeColor: strokeColorVar, //AIXO HA DE DEPENDRE DEL district.lastPosts o algo aixi, JA SIGUI COLOR O OPACITAT (DEL FILL)
+					strokeOpacity: 0.8,
+					strokeWeight: 1,
+					fillColor: fillColorVar, 
+					fillOpacity: 0.05+ numLastPosts/10
+			};
+			
+			return new google.maps.Polygon(polygonCharacteristics);
+		}
+		
+		function posarInfo(){
+			//Els camps disponibles estan en comentari.
+			var fillColor = ["#DC143C", "#C71585", "#FF8C00", "#8A2BE2", "#228B22", "#6495ED", "#F4A460", "#708090", "#FF1493", "#4B0082"];
+			var postsHeatMap=[];
+			
+			for(var i=0; i<arrayJSON.length; i++){
+				var district = arrayJSON[i];
+				district.postsDistrict=0;
+				//district.boundsDistrict
+				//district.centerDistrict
+				
+				var districtCoords = [];
+				for (var myindex in district.boundsDistrict){
+					//alert(district.boundsDistrict[myindex]);
+					districtCoords[myindex]= new google.maps.LatLng(parseFloat(district.boundsDistrict[myindex][0]), parseFloat(district.boundsDistrict[myindex][1]));
+				}
+				//alert(districtCoords);
+				district.boundsDistrictFloat=districtCoords;
+				//district.centerDistrictFloat=new google.maps.LatLng(parseFloat(districtCoords[0]), parseFloat(districtCoords[1]));
+				
+				for(var j=0;j<district.neighbs.length;j++){
+					var neighb = district.neighbs[j];
+					neighb.districtName=district.name;
+					
+					var neighbCoords = [];
+					for (var myindex in neighb.bounds){
+						//alert(district.boundsDistrict[myindex]);
+						neighbCoords[myindex]= new google.maps.LatLng(parseFloat(neighb.bounds[myindex][0]), parseFloat(neighb.bounds[myindex][1]));
+					}
+					neighb.boundsNeighbFloat=neighbCoords;
+					
+					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.numLastPosts); 
+					neighb.polygonNeighb.setMap(null);
+					
+					district.postsDistrict=district.postsDistrict+neighb.numLastPosts;
+					
+					//Get posts
+					for(var k=0; k<neighb.posts.length; k++){
+						var post = neighb.posts[k];
+						//alert(parseFloat(post.lat));
+						//alert(post.tags)
+						//post.im_link
+						//post.lat
+						//post.long
+						post.tags=post.tags.replace(",","<br>#").replace(",","<br>#");
+						post.tags=post.tags.substring(0,post.tags.indexOf(','));
+						if (post.tags.length>0){ 
+							post.tags = "#"+post.tags;
+						}
+						postsHeatMap.push(new google.maps.LatLng(parseFloat(post.lat), parseFloat(post.long)));
+						neighb.posts[k]=post;
+					}
+					
+					district.neighbs[j]=neighb;
+				}
+				
+				postsChart.push([decodeHTML(district.name), district.postsDistrict]);
+				
+				//Create polygon for district with corresponding numLastPosts
+				district.polygonDistrict=createPolygon(district.boundsDistrictFloat,fillColor[i],fillColor[i],district.postsDistrict);
+				district.polygonDistrict.setMap(null);
+				
+				arrayJSON[i] = district;
+				google.maps.event.addListener(district.polygonDistrict, 'mouseover', make_callback(district,0));
+				document.getElementById('loadingDiv').style.display="none";
+			}
+			
+			var pointArray = new google.maps.MVCArray(postsHeatMap);
+			heatmap = new google.maps.visualization.HeatmapLayer({
+				data: pointArray
+			});
+			heatmap.setMap(map);
+			heatmap.set('radius', 35);
+			
+			google.maps.event.addDomListener(map,'zoom_changed', zoomChanged);
+				
+		}
+		
+		function drawChart() {
+			//alert(postsChart)
+			var data = google.visualization.arrayToDataTable(postsChart);
+			var options = {
+			  title: 'Distribution of posts in the last 10 minutes',
+			  is3D: true,
+			};
+			chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+			chart.draw(data, options);
+			//chart.clearChart(); //AIXO BORRA TOT EL CHART
+        }
+		
+		function initialize() {
+			var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
+			var markerPos = new google.maps.LatLng(41.397555, 2.191187);
+
+			var mapOptions = {
+				zoom: 13,
+				center: myLatlng
+			};
+
+			map = new google.maps.Map(document.getElementById('mapa'),mapOptions);
+			queryInsta();
+			document.getElementById('homeLink').className="active";
+			document.getElementById('loadingDiv').style.display="inline-block";
+		}
+		
+		function make_callback(zona, tipus) { //Callback when user mouses over the map in neighbourhoods mode
+			return function() {
+				var codiTXT ="<h3 class='text-primary'>"+zona.name+"</h3>";
+				var lim=3;
+				//codiTXT=codiTXT+tipus;
+				if(tipus==0){
+					//District
+					codiTXT = codiTXT + "<dl><dt># in last 10 minutes</dt><dd>"+zona.postsDistrict+" posts</dd></dl>";
+					var c=0;
+					for(var j=0; j<zona.neighbs.length; j++){
+						//codiTXT=codiTXT+zona.neighbs[j].name;
+						for(var k=0; k<zona.neighbs[j].posts.length; k++){
+							var post = zona.neighbs[j].posts[k];
+							codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='80px' />";
+							codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
+							c=c+1;
+							if(c==3) break;
+						}
+						if(c==3) break;
+
+					}
+					
+				}else{
+					codiTXT = codiTXT + "<dl><dt># in last 10 minutes</dt><dd>"+zona.numLastPosts+" posts</dd></dl>";
+					codiTXT = codiTXT + "<dl><dt>District</dt><dd>"+zona.districtName+"</dd></dl>";
+					if (zona.posts.length<3){ 
+						lim=zona.posts;
+					}
+					var c=0;
+					for(var k=0; k<zona.posts.length; k++){
+						var post = zona.posts[k];
+						codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='80px' />";
+						codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
+						c=c+1;
+						if(c==3) break;
+					}
+				}
+				document.getElementById('infoLateral').innerHTML =codiTXT;
+			};
+		}
+				
+		function toggleHeatMap(){
+			//Amagar districtes i mostrar barris
+			if(statusHeat==false){
+				for(var i=0; i<arrayJSON.length; i++){
+					arrayJSON[i].polygonDistrict.setMap(null);
+					for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+						arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
+					}
+				}
+				heatmap.setMap(map);
+				statusHeat=true;
+			}else{
+				//Show info in lateral column
+				document.getElementById('infoLateral').innerHTML="<div class='page-header'><h2 align='center'><b>Neighbourhoods</b></h2></div><h4>Move the cursor over the different districts to get more information about them.</h4><h4>Zoom in to take a look at Barcelona neighbourhoods!</h4>";
+				heatmap.setMap(null);
+				if (map.getZoom()>=14){
+					//Amagar districtes i mostrar barris
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(null);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(map);
+							google.maps.event.addListener(arrayJSON[i].neighbs[j].polygonNeighb, 'mouseover', make_callback(arrayJSON[i].neighbs[j],1));
+
+						}
+					}
+				}else{
+					//Amagar barris i mostrar districtes
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(map);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
+						}
+					}
+				}
+				statusHeat=false;
+			}
+			
+			document.getElementById('homeLink').className="";
+			document.getElementById('aboutLink').className="";
+			document.getElementById('neighLink').className="active";
+			document.getElementById('statsLink').className="";
+		}
+		
+		function zoomChanged(){
+			if(statusHeat==false){
+				if (map.getZoom()>=14){
+					//Amagar districtes i mostrar barris
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(null);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(map);
+							google.maps.event.addListener(arrayJSON[i].neighbs[j].polygonNeighb, 'mouseover', make_callback(arrayJSON[i].neighbs[j],1));
+
+						}
+					}
+				}else{
+					//Amagar barris i mostrar districtes
+					for(var i=0; i<arrayJSON.length; i++){
+						arrayJSON[i].polygonDistrict.setMap(map);
+						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
+							arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
+						}
+					}
+				}
+			}
+		}
+		
+		function toggleAbout(){
+			//var htmlTXT="<div class='row clearfix'><div class='col-md-12 column'><div class='jumbotron'><h2>City Flow</h2></div><p>"+
+			//	"This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."+	
+			//	"</p>";
+			//document.getElementById('infoLateral').innerHTML = htmlTXT;
+			document.getElementById('aboutLink').className="active";
+			document.getElementById('homeLink').className="";
+			document.getElementById('statsLink').className="";
+			document.getElementById('neighLink').className="";
+			
+			var capaAbout = document.getElementById('about');
+			if(capaAbout.style.display=="none"){
+				capaAbout.style.position='absolute';
+				capaAbout.style.top='10px';
+				capaAbout.style.left='10px';
+				capaAbout.style.display="inline";
+				document.getElementById('stats').style.display="none";
+			}else{
+				capaAbout.style.display="none";
+			}
+		}
+
+		function toggleStatistics(){
+			//var htmlTXT="<div class='row clearfix'><div class='col-md-12 column'><div class='jumbotron'><h2>City Flow</h2></div><p>"+
+			//	"This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."+	
+			//	"</p>";
+			//document.getElementById('infoLateral').innerHTML = htmlTXT;
+			document.getElementById('aboutLink').className="";
+			document.getElementById('homeLink').className="";
+			document.getElementById('statsLink').className="active";
+			document.getElementById('neighLink').className="";
+			
+			var capaStats = document.getElementById('stats');
+			if(capaStats.style.display=="none"){
+				capaStats.style.position='absolute';
+				capaStats.style.top='10px';
+				capaStats.style.left='10px';
+				capaStats.style.display="inline";
+				document.getElementById('about').style.display="none";
+				drawChart(); //NOU!!!
+				capaStats.style.display="block-inline";
+			}else{
+				capaStats.style.display="none";
+			}
+		}
+		
+		function decodeHTML(str){
+			return str.replace("&iuml;", "ï").replace("&agrave;","à").replace("&oacute;", "ó").replace("&iacute;", "í");
+		}
+		
+		google.maps.event.addDomListener(window, 'load', initialize);
+	</script>
+</head>
+
+<body>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-2 column">
+			<p align="center"><a href=""><img src="logo.jpg" width="150"></img></a></p>
+			<nav class="navbar navbar-default" role="navigation">
+			  <div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				  <span class="sr-only">Toggle navigation</span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				</button>
+				<!--<a class="navbar-brand" href="#">Brand</a>-->
+			  </div>
+			  <!-- Collect the nav links, forms, and other content for toggling -->
+			  <div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav">
+				  <li id="homeLink"><a href="">Homepage</a></li>
+				  <li id="neighLink"><a href="javascript:toggleHeatMap()">Neighbourhoods</a></li>
+				  <li id="statsLink"><a href="javascript:toggleStatistics()">Statistics</a></li>
+				  <li id="aboutLink"><a href="javascript:toggleAbout()">About</a></li>
+				</ul>
+			  </div><!-- /.navbar-collapse -->
+			</nav>
+		</div>
+		<div class="col-md-8 column">
+			<div id="mapa"></div>
+			<div id="about" style="display:none;">
+				<div class='row clearfix'>
+					<div class='col-md-12 column'>
+						<div class='jumbotron'>
+							<a href="javascript:toggleAbout()" style="text-align: right;float: right;">Close</a>
+							<h1>We are City Flow!</h1>
+							<p>CityFlow provides real-time information about the hot spots in Barcelona, based on the information given by two sources:  Instagram API and future pedestrian flow sensors.</p>
+							<a href="http://www.global.datafest.net/a/datafest.net/globalurbandatafest/projects/nightflow">Global Urban Datafest Page</a>
+						</div>
+					</div>
+					<div class='col-md-4'>
+						<div class='thumbnail'>
+							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<div class='caption'>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Ricard Boada</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=245451857" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
+							</div>
+						</div>
+					</div>
+					<div class='col-md-4'>
+						<div class='thumbnail'>
+							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<div class='caption'>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Sergi Caelles</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=211869799" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
+							</div>
+						</div>
+					</div>
+					<div class='col-md-4'>
+						<div class='thumbnail'>
+							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<div class='caption'>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Mariona Dalmau</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=182399562" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
+							</div>
+						</div>
+					</div>
+					<div class='col-md-4'>
+						<div class='thumbnail'>
+							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<div class='caption'>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Alejandro Fernández</p></td><td align=right"><p class="pcaption"><img src="img/linkedin.png" width="23px"></p></td></tr></table>
+							</div>
+						</div>
+					</div>
+					<div class='col-md-4'>
+						<div class='thumbnail'>
+							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<div class='caption'>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Alberto Gómez</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=347278313" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
+							</div>
+						</div>
+					</div>
+					<div class='col-md-4'>
+						<div class='thumbnail'>
+							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<div class='caption'>
+								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Miquel Martí</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=175904290" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		
+			<div id="stats" style="display:none;">
+					<div class='row clearfix'>
+						<div class='col-md-12 column'>
+							<div class='jumbotron' style="padding-bottom:5px;overflow:hidden;">
+								<a href="javascript:toggleStatistics()" style="text-align: right;float: right;">Close</a>
+								<h1>Statistics</h1>
+								<p>Here we show the number of instagrams posted in the last 10 minutes, ordered by districts in Barcelona, to see the hottest places right now! </p>
+								<div id="piechart_3d"></div>
+							</div>
+						</div>
+					</div>
+			</div>
+			
+			<div id="loadingDiv" style="display:none;">
+					<div class='row clearfix'>
+						<div class='col-md-12 column'>
+							<div class='jumbotron center'>
+								<p><img src="img/loading.gif" width="25px"></img> <b>Loading...</b></p>
+							</div>
+						</div>
+					</div>
+			</div>
+		</div><!-- close main column -->
+		<div class="col-md-2 column" id="infoLateral">
+			<div class="page-header">
+				<h2>Welcome to <b>City Flow!</b></h2>
+			</div>
+			<h4>CityFlow provides real-time information about the <strong>hot spots</strong> in Barcelona, based on the information given by two sources: </h4>
+			<ul>
+					<li><strong>Instagram</strong> API</li>
+					<li>Future pedestrian <strong>flow sensors</li>
+			</ul>
+			<br><br><br>
+			<p align="center">Barcelona<br>Global Urban Datafest</p>
+			</div>
+		
+	</div>
+</div>
+</body>
+</html>
