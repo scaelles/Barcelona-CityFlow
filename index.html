@@ -176,6 +176,7 @@
 				
 				for(var j=0;j<district.neighbs.length;j++){
 					var neighb = district.neighbs[j];
+					neighb.districtName=district.name;
 					
 					var neighbCoords = [];
 					for (var myindex in neighb.bounds){
@@ -197,8 +198,13 @@
 						//post.im_link
 						//post.lat
 						//post.long
-						
+						post.tags=post.tags.replace(",","<br>#").replace(",","<br>#");
+						post.tags=post.tags.substring(0,post.tags.indexOf(','));
+						if (post.tags.length>0){ 
+							post.tags = "#"+post.tags;
+						}
 						postsHeatMap.push(new google.maps.LatLng(parseFloat(post.lat), parseFloat(post.long)));
+						neighb.posts[k]=post;
 					}
 					
 					district.neighbs[j]=neighb;
@@ -253,65 +259,47 @@
 			document.getElementById('loadingDiv').style.display="inline-block";
 		}
 		
-		function make_callback(zona, tipus) {
+		function make_callback(zona, tipus) { //Callback when user mouses over the map in neighbourhoods mode
 			return function() {
-				var codiTXT ="<h2>"+decodeURIComponent(escape(zona.name))+"</h2>";
+				var codiTXT ="<h3 class='text-primary'>"+zona.name+"</h3>";
 				var lim=3;
 				//codiTXT=codiTXT+tipus;
 				if(tipus==0){
 					//District
+					codiTXT = codiTXT + "<dl><dt># in last 10 minutes</dt><dd>"+zona.postsDistrict+" posts</dd></dl>";
+					var c=0;
 					for(var j=0; j<zona.neighbs.length; j++){
 						//codiTXT=codiTXT+zona.neighbs[j].name;
-						if (zona.neighbs[j].posts.length<3){ 
-							lim=zona.neighbs[j].posts.length;
-						}
-						for(var k=0; k<lim; k++){
+						for(var k=0; k<zona.neighbs[j].posts.length; k++){
 							var post = zona.neighbs[j].posts[k];
-							codiTXT=codiTXT+"<img src='"+post.link+"' width=150></img><br>";
+							codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='80px' />";
+							codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
+							c=c+1;
+							if(c==3) break;
 						}
+						if(c==3) break;
+
 					}
 					
 				}else{
-					if (zona.posts<3){ 
+					codiTXT = codiTXT + "<dl><dt># in last 10 minutes</dt><dd>"+zona.numLastPosts+" posts</dd></dl>";
+					codiTXT = codiTXT + "<dl><dt>District</dt><dd>"+zona.districtName+"</dd></dl>";
+					if (zona.posts.length<3){ 
 						lim=zona.posts;
 					}
-					for(var i=0; i<lim; i++){
-						codiTXT=codiTXT+"<img src='"+zona.posts[i].link+"' width=150></img><br>";
+					var c=0;
+					for(var k=0; k<zona.posts.length; k++){
+						var post = zona.posts[k];
+						codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='80px' />";
+						codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
+						c=c+1;
+						if(c==3) break;
 					}
 				}
 				document.getElementById('infoLateral').innerHTML =codiTXT;
 			};
 		}
-		// <dl class="dl-horizontal">
-				// <dt>
-					// Description lists
-				// </dt>
-				// <dd>
-					// A description list is perfect for defining terms.
-				// </dd>
-				// <dt>
-					// Euismod
-				// </dt>
-				// <dd>
-					// Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.
-				// </dd>
-				// <dd>
-					// Donec id elit non mi porta gravida at eget metus.
-				// </dd>
-				// <dt>
-					// Malesuada porta
-				// </dt>
-				// <dd>
-					// Etiam porta sem malesuada magna mollis euismod.
-				// </dd>
-				// <dt>
-					// Felis euismod semper eget lacinia
-				// </dt>
-				// <dd>
-					// Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
-				// </dd>
-			// </dl>
-		
+				
 		function toggleHeatMap(){
 			//Amagar districtes i mostrar barris
 			if(statusHeat==false){
@@ -556,7 +544,7 @@
 					<li>Future pedestrian <strong>flow sensors</li>
 			</ul>
 			<br><br><br>
-			<p align="center">Barcelona Global Urban Datafest</p>
+			<p align="center">Barcelona<br>Global Urban Datafest</p>
 			</div>
 		
 	</div>
