@@ -164,24 +164,23 @@
 				
 				var districtCoords = [];
 				for (var myindex in district.boundsDistrict){
-					//alert(district.boundsDistrict[myindex]);
 					districtCoords[myindex]= new google.maps.LatLng(parseFloat(district.boundsDistrict[myindex][0]), parseFloat(district.boundsDistrict[myindex][1]));
 				}
-				//alert(districtCoords);
 				district.boundsDistrictFloat=districtCoords;
-				//district.centerDistrictFloat=new google.maps.LatLng(parseFloat(districtCoords[0]), parseFloat(districtCoords[1]));
 				
 				for(var j=0;j<district.neighbs.length;j++){
 					var neighb = district.neighbs[j];
+					alert(neighb.name+": "+j+"/"+district.neighbs.length);
 					neighb.districtName=district.name;
+					//alert("Barri: "+neighb.name+"; District: "+district.name);
 					
 					var neighbCoords = [];
 					for (var myindex in neighb.bounds){
-						//alert(district.boundsDistrict[myindex]);
 						neighbCoords[myindex]= new google.maps.LatLng(parseFloat(neighb.bounds[myindex][0]), parseFloat(neighb.bounds[myindex][1]));
 					}
 					neighb.boundsNeighbFloat=neighbCoords;
 					
+					//Create polygons for each neighbourhood and do not show them for now.
 					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.numLastPosts, opacityNeighb); 
 					neighb.polygonNeighb.setMap(null);
 					
@@ -214,8 +213,6 @@
 				district.polygonDistrict.setMap(null);
 				
 				arrayJSON[i] = district;
-				google.maps.event.addListener(district.polygonDistrict, 'mouseover', make_callback(district,0));
-				document.getElementById('loadingDiv').style.display="none";
 			}
 			
 			var pointArray = new google.maps.MVCArray(postsHeatMap);
@@ -226,7 +223,7 @@
 			heatmap.set('radius', 35);
 			
 			google.maps.event.addDomListener(map,'zoom_changed', zoomChanged);
-				
+			document.getElementById('loadingDiv').style.display="none";
 		}
 		
 		function drawChart() {
@@ -243,7 +240,6 @@
 		
 		function initialize() {
 			var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
-			var markerPos = new google.maps.LatLng(41.397555, 2.191187);
 			var mapOptions = {
 				zoom: 13,
 				center: myLatlng
@@ -296,7 +292,7 @@
 				
 		function toggleHeatMap(){
 			//Amagar districtes i mostrar barris
-			if(statusHeat==false){
+			if(statusHeat==false){ //Show heatmap
 				for(var i=0; i<arrayJSON.length; i++){
 					arrayJSON[i].polygonDistrict.setMap(null);
 					for(var j=0; j<arrayJSON[i].neighbs.length; j++){
@@ -305,7 +301,7 @@
 				}
 				heatmap.setMap(map);
 				statusHeat=true;
-			}else{
+			}else{ //Show neighbourhoods
 				//Show info in lateral column
 				document.getElementById('infoLateral').innerHTML="<div class='page-header'><h2 align='center'><b>Neighbourhoods</b></h2></div><h4>Move the cursor over the different districts to get more information about them.</h4><h4>Zoom in to take a look at Barcelona neighbourhoods!</h4>";
 				heatmap.setMap(null);
@@ -322,6 +318,7 @@
 					//Amagar barris i mostrar districtes
 					for(var i=0; i<arrayJSON.length; i++){
 						arrayJSON[i].polygonDistrict.setMap(map);
+						google.maps.event.addListener(arrayJSON[i].polygonDistrict, 'mouseover', make_callback(arrayJSON[i],0));
 						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
 							arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
 						}
@@ -337,8 +334,10 @@
 		}
 		
 		function zoomChanged(){
+			alert("Hola");
 			if(statusHeat==false){
 				if (map.getZoom()>=14){
+					//Amagar districtes i mostrar barris
 					//Amagar districtes i mostrar barris
 					for(var i=0; i<arrayJSON.length; i++){
 						arrayJSON[i].polygonDistrict.setMap(null);
@@ -351,6 +350,7 @@
 					//Amagar barris i mostrar districtes
 					for(var i=0; i<arrayJSON.length; i++){
 						arrayJSON[i].polygonDistrict.setMap(map);
+						google.maps.event.addListener(arrayJSON[i].polygonDistrict, 'mouseover', make_callback(arrayJSON[i],0));
 						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
 							arrayJSON[i].neighbs[j].polygonNeighb.setMap(null);
 						}

@@ -39,6 +39,7 @@
 		$centerDistrict=explode(',',$rowDistr['center']);
 		
 		$cNeigh=0;
+		$arrayNeigh=[];
 		$resNeigh = mysqli_query($con, "SELECT * FROM neighbourhoods WHERE idDistrict='$idDistrict'") or die("Error in neighbourhoods query<br>".mysqli_error($con));
 		while($rowNeigh=mysqli_fetch_array($resNeigh)){
 			//we have to look for the last 3 posts in the social network, and count posts in last period of time.
@@ -64,7 +65,7 @@
 			//Retrieve 3 last images in neighbourhood
 			$cPosts=0;
 			$arrayPosts=array();
-			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' AND DATE_SUB(date,INTERVAL 1 HOUR) BETWEEN DATE_SUB(NOW(), INTERVAL 120 MINUTE) AND NOW() ORDER BY date DESC");
+			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' AND DATE_SUB(date,INTERVAL 1 HOUR) BETWEEN DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND NOW() ORDER BY date DESC");
 			//echo mysqli_num_rows($resPosts);
 			while($rowPosts=mysqli_fetch_array($resPosts)){ 
 				$tagsPost=htmlspecialchars($rowPosts['tags']);
@@ -83,6 +84,7 @@
 		$arrayDistr[$c]=array('idDistrict'=>$idDistrict, 'name'=>$nameDistrict,'boundsDistrict'=>$boundsDistrict,'neighbs'=>$arrayNeigh,'centerDistrict'=>$centerDistrict);
 		$c++;
 	}
+	//print_r($arrayDistr);
 	$plainJSON = json_encode($arrayDistr);
 	echo $plainJSON;
 			
