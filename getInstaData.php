@@ -52,20 +52,11 @@
 			for($i=0; $i<count($boundsNeighStr);$i++){
 				$boundsNeigh[$i]=explode(',',$boundsNeighStr[$i]);
 			}
-		
-			//Count posts in last X minutes
-			// $resNumPosts=mysqli_query($con,"SELECT COUNT(idPost) FROM posts WHERE date BETWEEN DATE_SUB(NOW(),INTERVAL 120 MINUTE) AND NOW() AND idNeighb='$idNeigh'") or die(mysqli_error($con));
-			// if(mysqli_num_rows($resNumPosts)>0){
-				// $numPostsNeigh = mysqli_fetch_array($resNumPosts);
-				// $numPostsNeigh=$numPostsNeigh[0];
-			// }else{
-				// $numPostsNeigh=0;
-			// }
 			
 			//Retrieve 3 last images in neighbourhood
 			$cPosts=0;
 			$arrayPosts=array();
-			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' AND DATE_SUB(date,INTERVAL 1 HOUR) BETWEEN DATE_SUB(NOW(), INTERVAL 10 MINUTE) AND NOW() ORDER BY date DESC");
+			$resPosts=mysqli_query($con,"SELECT im_link, tags, lat, posts.lng FROM posts WHERE idNeighb='$idNeigh' AND DATE_SUB(date,INTERVAL 1 HOUR) BETWEEN DATE_SUB(NOW(), INTERVAL 30 MINUTE) AND NOW() ORDER BY date DESC");
 			//echo mysqli_num_rows($resPosts);
 			while($rowPosts=mysqli_fetch_array($resPosts)){ 
 				$tagsPost=htmlspecialchars($rowPosts['tags']);
