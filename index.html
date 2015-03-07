@@ -64,27 +64,23 @@
   .navbar-collapse.in {
     overflow-x: visible;
   }
-
 .navbar
 {
 	max-width:300px;
 	margin-right: 0;
 	margin-left: 0;
 }	
-
 .navbar-nav,
 .navbar-nav > li,
 .navbar-left,
 .navbar-right,
 .navbar-header
 {float:none !important;}
-
 .navbar-right .dropdown-menu {left:0;right:auto;}
 .navbar-collapse .navbar-nav.navbar-right:last-child {
     margin-right: 0;
 }
 }
-
 .pcaption{
 	font-size:20px;
 	
@@ -137,7 +133,6 @@
 			xmlhttp.open("GET","getInstaData.php",true);
 			xmlhttp.send();
 		}
-
 		
 		function createPolygon(coords, strokeColorVar, fillColorVar, numLastPosts){
 			//strokeColor: '#FF0000'
@@ -247,12 +242,10 @@
 		function initialize() {
 			var myLatlng = new google.maps.LatLng(41.392918, 2.180317);
 			var markerPos = new google.maps.LatLng(41.397555, 2.191187);
-
 			var mapOptions = {
 				zoom: 13,
 				center: myLatlng
 			};
-
 			map = new google.maps.Map(document.getElementById('mapa'),mapOptions);
 			queryInsta();
 			document.getElementById('homeLink').className="active";
@@ -278,7 +271,6 @@
 							if(c==3) break;
 						}
 						if(c==3) break;
-
 					}
 					
 				}else{
@@ -322,7 +314,6 @@
 						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
 							arrayJSON[i].neighbs[j].polygonNeighb.setMap(map);
 							google.maps.event.addListener(arrayJSON[i].neighbs[j].polygonNeighb, 'mouseover', make_callback(arrayJSON[i].neighbs[j],1));
-
 						}
 					}
 				}else{
@@ -352,7 +343,6 @@
 						for(var j=0; j<arrayJSON[i].neighbs.length; j++){
 							arrayJSON[i].neighbs[j].polygonNeighb.setMap(map);
 							google.maps.event.addListener(arrayJSON[i].neighbs[j].polygonNeighb, 'mouseover', make_callback(arrayJSON[i].neighbs[j],1));
-
 						}
 					}
 				}else{
@@ -388,7 +378,6 @@
 				capaAbout.style.display="none";
 			}
 		}
-
 		function toggleStatistics(){
 			//var htmlTXT="<div class='row clearfix'><div class='col-md-12 column'><div class='jumbotron'><h2>City Flow</h2></div><p>"+
 			//	"This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."+	
