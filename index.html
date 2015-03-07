@@ -301,6 +301,7 @@
 				}
 				heatmap.setMap(map);
 				statusHeat=true;
+				document.getElementById('neighLink').innerHTML="<a href='javascript:toggleHeatMap()'>Neighbourhoods</a>";
 			}else{ //Show neighbourhoods
 				//Show info in lateral column
 				document.getElementById('infoLateral').innerHTML="<div class='page-header'><h2 align='center'><b>Neighbourhoods</b></h2></div><h4>Move the cursor over the different districts to get more information about them.</h4><h4>Zoom in to take a look at Barcelona neighbourhoods!</h4>";
@@ -325,6 +326,7 @@
 					}
 				}
 				statusHeat=false;
+				document.getElementById('neighLink').innerHTML="<a href='javascript:toggleHeatMap()'>Heat map</a>";
 			}
 			
 			document.getElementById('homeLink').className="";
@@ -436,7 +438,7 @@
 		</div>
 		<div class="col-md-8 column">
 			<div id="mapa"></div>
-			<div id="about" style="display:none;">
+			<div id="about" style="display:none;z-index:99">
 				<div class='row clearfix'>
 					<div class='col-md-12 column'>
 						<div class='jumbotron'>
@@ -448,7 +450,7 @@
 					</div>
 					<div class='col-md-4'>
 						<div class='thumbnail'>
-							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<img alt='300x200' src='img/rboa.jpg' />
 							<div class='caption'>
 								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Ricard Boada</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=245451857" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
@@ -456,7 +458,7 @@
 					</div>
 					<div class='col-md-4'>
 						<div class='thumbnail'>
-							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<img alt='300x200' src='img/scae.jpg' />
 							<div class='caption'>
 								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Sergi Caelles</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=211869799" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
@@ -474,13 +476,13 @@
 						<div class='thumbnail'>
 							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
 							<div class='caption'>
-								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Alejandro Fernández</p></td><td align=right"><p class="pcaption"><img src="img/linkedin.png" width="23px"></p></td></tr></table>
+								<table width="95%"><tr><td valign="bottom"><p style="font-size: 18px">Alejandro Fernández</p></td><td align=right"><p class="pcaption"><img src="img/linkedin.png" width="23px"></p></td></tr></table>
 							</div>
 						</div>
 					</div>
 					<div class='col-md-4'>
 						<div class='thumbnail'>
-							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<img alt='300x200' src='img/agom.jpg' />
 							<div class='caption'>
 								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Alberto Gómez</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=347278313" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
@@ -488,7 +490,7 @@
 					</div>
 					<div class='col-md-4'>
 						<div class='thumbnail'>
-							<img alt='300x200' src='http://lorempixel.com/600/200/people' />
+							<img alt='300x200' src='img/mmar.jpg' />
 							<div class='caption'>
 								<table width="95%"><tr><td valign="bottom"><p class="pcaption">Miquel Martí</p></td><td align=right"><p class="pcaption"><a href="https://www.linkedin.com/profile/view?id=175904290" target="_blank"><img src="img/linkedin.png" width="23px"></a></p></td></tr></table>
 							</div>
