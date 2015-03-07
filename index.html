@@ -153,8 +153,8 @@
 			//Els camps disponibles estan en comentari.
 			var fillColor = ["#DC143C", "#C71585", "#FF8C00", "#8A2BE2", "#228B22", "#6495ED", "#F4A460", "#708090", "#FF1493", "#4B0082"];
 			var postsHeatMap=[];
-			var opacityNeighb = 5;
-			var opacityDistrict = 50;
+			var opacityNeighb = 15;
+			var opacityDistrict = 150;
 			
 			for(var i=0; i<arrayJSON.length; i++){
 				var district = arrayJSON[i];
@@ -230,7 +230,7 @@
 			//alert(postsChart)
 			var data = google.visualization.arrayToDataTable(postsChart);
 			var options = {
-			  title: 'Distribution of posts in the last 10 minutes',
+			  title: 'Distribution of posts in the last 30 minutes',
 			  is3D: true,
 			};
 			chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
@@ -257,13 +257,13 @@
 				//codiTXT=codiTXT+tipus;
 				if(tipus==0){
 					//District
-					codiTXT = codiTXT + "<dl><dt># in last 10 minutes</dt><dd>"+zona.postsDistrict+" posts</dd></dl>";
+					codiTXT = codiTXT + "<dl><dt># in last 30 minutes</dt><dd>"+zona.postsDistrict+" posts</dd></dl>";
 					var c=0;
 					for(var j=0; j<zona.neighbs.length; j++){
 						//codiTXT=codiTXT+zona.neighbs[j].name;
 						for(var k=0; k<zona.neighbs[j].posts.length; k++){
 							var post = zona.neighbs[j].posts[k];
-							codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='100px' />";
+							codiTXT=codiTXT+"<a href='"+post.link+"' target='_blank'><img src='"+post.link+"' class='img-rounded' width='100px' /></a>";
 							codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
 							c=c+1;
 							if(c==3) break;
@@ -272,7 +272,7 @@
 					}
 					
 				}else{
-					codiTXT = codiTXT + "<dl><dt># in last 10 minutes</dt><dd>"+zona.numLastPosts+" posts</dd></dl>";
+					codiTXT = codiTXT + "<dl><dt># in last 30 minutes</dt><dd>"+zona.numLastPosts+" posts</dd></dl>";
 					codiTXT = codiTXT + "<dl><dt>District</dt><dd>"+zona.districtName+"</dd></dl>";
 					if (zona.posts.length<3){ 
 						lim=zona.posts;
@@ -280,7 +280,7 @@
 					var c=0;
 					for(var k=0; k<zona.posts.length; k++){
 						var post = zona.posts[k];
-						codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='90px' />";
+						codiTXT=codiTXT+"<a href='"+post.link+"' target='_blank'><img src='"+post.link+"' class='img-rounded' width='90px' /></a>";
 						codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
 						c=c+1;
 						if(c==3) break;
@@ -334,7 +334,6 @@
 		}
 		
 		function zoomChanged(){
-			alert("Hola");
 			if(statusHeat==false){
 				if (map.getZoom()>=14){
 					//Amagar districtes i mostrar barris
@@ -381,9 +380,6 @@
 			}
 		}
 		function toggleStatistics(){
-			//var htmlTXT="<div class='row clearfix'><div class='col-md-12 column'><div class='jumbotron'><h2>City Flow</h2></div><p>"+
-			//	"This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique."+	
-			//	"</p>";
 			//document.getElementById('infoLateral').innerHTML = htmlTXT;
 			document.getElementById('aboutLink').className="";
 			document.getElementById('homeLink').className="";
@@ -508,7 +504,7 @@
 							<div class='jumbotron' style="padding-bottom:5px;overflow:hidden;">
 								<a href="javascript:toggleStatistics()" style="text-align: right;float: right;">Close</a>
 								<h1>Statistics</h1>
-								<p>Here we show the number of instagrams posted in the last 10 minutes, ordered by districts in Barcelona, to see the hottest places right now! </p>
+								<p>Here we show the number of instagrams posted in the last 30 minutes, ordered by districts in Barcelona, to see the hottest places right now! </p>
 								<div id="piechart_3d"></div>
 							</div>
 						</div>
