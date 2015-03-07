@@ -134,7 +134,7 @@
 			xmlhttp.send();
 		}
 		
-		function createPolygon(coords, strokeColorVar, fillColorVar, numLastPosts){
+		function createPolygon(coords, strokeColorVar, fillColorVar, numLastPosts, opacity){
 			//strokeColor: '#FF0000'
 			//fillColor: '#F00000'
 			var polygonCharacteristics = {
@@ -143,7 +143,7 @@
 					strokeOpacity: 0.8,
 					strokeWeight: 1,
 					fillColor: fillColorVar, 
-					fillOpacity: 0.05+ numLastPosts/10
+					fillOpacity: 0.05+ numLastPosts/opacity,
 			};
 			
 			return new google.maps.Polygon(polygonCharacteristics);
@@ -153,6 +153,8 @@
 			//Els camps disponibles estan en comentari.
 			var fillColor = ["#DC143C", "#C71585", "#FF8C00", "#8A2BE2", "#228B22", "#6495ED", "#F4A460", "#708090", "#FF1493", "#4B0082"];
 			var postsHeatMap=[];
+			var opacityNeighb = 50;
+			var opacityDistrict = 500;
 			
 			for(var i=0; i<arrayJSON.length; i++){
 				var district = arrayJSON[i];
@@ -180,7 +182,7 @@
 					}
 					neighb.boundsNeighbFloat=neighbCoords;
 					
-					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.numLastPosts); 
+					neighb.polygonNeighb = createPolygon(neighbCoords,fillColor[i],fillColor[i],neighb.numLastPosts, opacityNeighb); 
 					neighb.polygonNeighb.setMap(null);
 					
 					district.postsDistrict=district.postsDistrict+neighb.numLastPosts;
@@ -208,7 +210,7 @@
 				postsChart.push([decodeHTML(district.name), district.postsDistrict]);
 				
 				//Create polygon for district with corresponding numLastPosts
-				district.polygonDistrict=createPolygon(district.boundsDistrictFloat,fillColor[i],fillColor[i],district.postsDistrict);
+				district.polygonDistrict=createPolygon(district.boundsDistrictFloat,fillColor[i],fillColor[i],district.postsDistrict,opacityDistrict);
 				district.polygonDistrict.setMap(null);
 				
 				arrayJSON[i] = district;
@@ -265,7 +267,7 @@
 						//codiTXT=codiTXT+zona.neighbs[j].name;
 						for(var k=0; k<zona.neighbs[j].posts.length; k++){
 							var post = zona.neighbs[j].posts[k];
-							codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='80px' />";
+							codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='100px' />";
 							codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
 							c=c+1;
 							if(c==3) break;
@@ -282,7 +284,7 @@
 					var c=0;
 					for(var k=0; k<zona.posts.length; k++){
 						var post = zona.posts[k];
-						codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='80px' />";
+						codiTXT=codiTXT+"<img src='"+post.link+"' class='img-rounded' width='90px' />";
 						codiTXT=codiTXT+"<p style='font-size: 11px'>"+post.tags+"</p>";
 						c=c+1;
 						if(c==3) break;
